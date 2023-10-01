@@ -52,6 +52,6 @@ class Novedades:
         self.fechaHastaN = ['']*10
         self.tipoUsuario = ['']*20
         self.estadoLocal = "B"
-# Comentario 
+# Comentario 2
 
 #Programa principal
