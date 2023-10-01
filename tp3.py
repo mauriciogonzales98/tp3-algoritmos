@@ -1,4 +1,4 @@
-from getpass import getpass
+ñfrom getpass import getpass
 from os import system
 import pickle
 import os.path
@@ -49,3 +49,7 @@ class Novedades:
         self.estadoLocal = "B"
 
 #Programa principal
+
+
+
+print("jejej")
