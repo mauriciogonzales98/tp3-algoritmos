@@ -38,7 +38,7 @@ class Promociones:
         self.estadoLocal = ['']*10
         self.codLocal = 0
 
-class UsoPromos:
+class UsoPromos:|
      def __init__(self):  
         self.codCliente = 0
         self.codPromo = 0
