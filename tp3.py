@@ -7,13 +7,11 @@ import time
 import datetime
 
 #Declaraciones de clases
-<<<<<<< HEAD
 print("holis")
 
 def suma(a, b):
   c = a + b
   return c
-=======
 class Usuarios:
      def __init__(self):  
         self.codUsuario = 0
@@ -54,5 +52,4 @@ class Novedades:
         self.fechaHastaN = ['']*10
         self.tipoUsuario = ['']*20
         self.estadoLocal = "B"
->>>>>>> 78c3afcdfbe14ec756bcbd51a01746036eafaad9
 # Comentario 
