@@ -7,3 +7,7 @@ import time
 
 #Declaraciones de clases
 print("holis")
+
+def suma(a, b):
+  c = a + b
+  return c
