@@ -1,4 +1,4 @@
-ñfrom getpass import getpass
+from getpass import getpass
 from os import system
 import pickle
 import os.path
