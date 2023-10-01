@@ -27,9 +27,8 @@ class Promociones:
      def __init__(self):  
         self.codPromo = 0
         self.textoPromo = ['']*200
-        self.fechaDesdeP = ['']*50
-        
-        self.fechaHastaP = ['']*50
+        self.fechaDesdeP = ['']*10
+        self.fechaHastaP = ['']*10
         self.diasSemana = [0]*7
         self.estadoLocal = ['']*10
         self.codLocal = 0
@@ -44,7 +43,7 @@ class Novedades:
      def __init__(self):  
         self.codNovedad = 0
         self.textNovedad = ['']*200
-        self.fechaDesdeN = ['']*50
-        self.fechaHastaN = ['']*50
+        self.fechaDesdeN = ['']*10
+        self.fechaHastaN = ['']*10
         self.tipoUsuario = ['']*20
         self.estadoLocal = "B"
