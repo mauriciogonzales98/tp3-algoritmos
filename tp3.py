@@ -1,4 +1,4 @@
-from getpass import getpass
+ñfrom getpass import getpass
 from os import system
 import pickle
 import os.path
@@ -7,11 +7,6 @@ import time
 import datetime
 
 #Declaraciones de clases
-print("holis")
-
-def suma(a, b):
-  c = a + b
-  return c
 class Usuarios:
      def __init__(self):  
         self.codUsuario = 0
@@ -55,3 +50,7 @@ class Novedades:
 # Comentario 2
 
 #Programa principal
+
+
+
+print("jejej")
