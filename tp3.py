@@ -53,3 +53,5 @@ class Novedades:
         self.tipoUsuario = ['']*20
         self.estadoLocal = "B"
 # Comentario 
+
+#Programa principal
