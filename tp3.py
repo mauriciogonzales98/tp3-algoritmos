@@ -155,8 +155,8 @@ def menuAdmin():
       crearCuentasDuenos()
     elif op == '3':
       adSolDesc()
-    elif op == '4':
-      gestionNovedades()
+    elif op == "4":
+				print("codificado en chapín")
     elif op == '5':
       utilizacionDesc()
     else:
