@@ -92,7 +92,7 @@ def login():
 
   return res
 
-#Validarcion de las opciones de los menus
+#Validacion de las opciones de los menus
 def validarInput(desde, hasta):
   op = input()
   while op < desde or op > hasta:
@@ -137,7 +137,85 @@ def buscarUsuario(usuario):
 # Declarativa de los menus
 
 def menuAdmin():
-	
+	  clear()
+  print("Elija una opcion:")
+  print("1)Gestion de locales")
+  print("2)Crear cuentas de dueños de locales")
+  print("3)Aprobar/Denegar solicitud de descuento")
+  print("4)Gestion de novedades")
+  print("5)Reporte de utilizacion de descuentos")
+  print("0)Salir")
+  op = validarInput('0', '5')
+
+  while op != '0':
+
+    if op == '1':
+      gestionarLocales()
+    elif op == '2':
+      crearCuentasDuenos()
+    elif op == '3':
+      adSolDesc()
+    elif op == '4':
+      gestionNovedades()
+    elif op == '5':
+      utilizacionDesc()
+    else:
+      clear()
+      print('Adios!')
+
+
+def menuDueno():
+	  op = ''
+  while op != '0':
+    clear()
+    print("Elija una opcion:")
+    print("1)Gestión de Descuentos")
+    print("2)Aceptar / Rechazar pedido de descuento")
+    print("3)Reporte de uso de descuentos")
+    print("0)Salir")
+    
+    op = validarInput('0', '3')
+  
+    if op == '1':
+#Submenu
+      while op != 'd':
+        clear()
+        print("Elija una opcion:")
+        print("1)Gestión de Descuentos")
+        print('    a)Crear descuento para mi local\n',
+              '   b)Modificar descuento de mi local')
+        print('    c)Eliminar descuento de mi local\n','
+					if op == "a":
+						crearDesc()
+					elif op == "b":
+						modDesc()
+					elif op == "c":
+						elimDesc()
+#/Submenu
+			elif op == "2":
+				adPedDesc()
+			elif op == "3":
+				repUsoDesc()
+
+def menuCliente():
+	  clear()
+  print('1) Registrarme')
+  print('2) Buscar descuentos en locales')
+  print('3) Solicitar descuento')
+  print('4) Ver novedades')
+  print('0) Salir')
+  op = validarInput('0', '4')
+
+  while op != '0':
+
+    if op == "1":
+      registroCliente()
+			elif op == "2":
+				buscoDescuento()
+			elif op == "3":
+				solicitoDescuento()
+			elif op == "4":
+				verNovedades()
 
 #Programa principal
 
