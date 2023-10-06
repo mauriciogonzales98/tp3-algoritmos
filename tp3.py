@@ -107,8 +107,13 @@ def registrarCliente():
   print("En construccion")
 
 #Determina que usuario se logeo y llama al menu correspondiente
-def usuarioLogeado():
-  print("En construccion")
+def usuarioLogeado
+	if regUsuarios.tipoUsuario= "administrador"
+		menuAdministrador()
+	elif regUsuarios.tipoUsuario= "duenolocal"
+		menuDueno()
+	elif regUsuarios.tipoUsuario = "cliente"
+		menuCliente()
 
 #Busca un usuario en el archivo de usuarios. Barrido secuencial.
 def buscarUsuario(usuario):
@@ -128,6 +133,11 @@ def buscarUsuario(usuario):
     pos = -1
 
   return pos
+
+# Declarativa de los menus
+
+def menuAdmin():
+	
 
 #Programa principal
 
