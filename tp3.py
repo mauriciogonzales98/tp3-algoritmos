@@ -124,11 +124,17 @@ def registrarUsuario(tipoUsuario):
   global regUsuario
   email = input("ingrese su email")
   contrasena = input("ingrese su contraseña")
-  if buscarUsuario (email) != -1:
+  if buscarUsuario (email) == -1:
     regUsuario.nombreUsuario = email
     regUsuario.claveUsuario = contrasena
     regUsuario.tipoUsuario = tipoUsuario
-
+    tamUsuarios = alUsuarios.os.path.getsize()
+    alUsuarios.seek(0)
+    regUsuario = pickle.load(alUsuarios)
+    
+    codUser = 
+    regUsuario.codUsuario = 
+    pickle.dump(regUsuario,alUsuarios)
 
 
   
@@ -155,19 +161,19 @@ def buscarUsuario(usuario):
     print(regUsuario.nombreUsuario, usuario)
     input()
     if (usuario == regUsuario.nombreUsuario):
+      print("BANDERITA")
+      input()
+      b = True
+    #ACA ES EL ERROR, posiblemente formateo
+    print(regUsuario.nombreUsuario, usuario)
+    input()
+    if (usuario == regUsuario.nombreUsuario):
       b = True
 
-<<<<<<< HEAD
   if not(b):
     pos = -1
 
   return pos
-=======
-    if not(b):
-      pos = -1
-
-    return pos
->>>>>>> 5752683595b84b60ea801a507dbe9a5207f7cb1d
 # Declarativa de los menus --------------------------------------------------
 # Menu General
 def menuPrincipal():
@@ -316,8 +322,7 @@ def menuCliente():
       verNovedades()
 
 #Funciones del Administrador----------------------------------
-def gestionarLocales():
-  print("a")
+
 
 def crearCuentasDuenos():
   print("b")
