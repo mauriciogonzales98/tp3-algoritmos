@@ -121,10 +121,14 @@ def cargaAuxiliar():
 
 #Funcion para registrar clientes
 def registrarUsuario(tipoUsuario):
+  global regUsuario
   email = input("ingrese su email")
   contrasena = input("ingrese su contraseña")
   if buscarUsuario (email) != -1:
-    print("not ok")
+    regUsuario.nombreUsuario = email
+    regUsuario.claveUsuario = contrasena
+    regUsuario.tipoUsuario = tipoUsuario
+
 
 
   
@@ -148,7 +152,6 @@ def buscarUsuario(usuario):
   while (alUsuarios.tell() < tmUsuario) and not(b):
     pos = alUsuarios.tell()
     regUsuario = pickle.load(alUsuarios)
-    #ACA ES EL ERROR, posiblemente formateo
     print(regUsuario.nombreUsuario, usuario)
     input()
     if (usuario == regUsuario.nombreUsuario):
@@ -180,7 +183,7 @@ def menuPrincipal():
       input()
 
     elif op == '2':
-      registrarCliente()
+      registrarUsuario("cliente")
 
     else:
       clear()
@@ -365,7 +368,7 @@ regUsuario = Usuarios()
 #Cargo algunos datos basicos para el funcionamiento del programa
 cargaAuxiliar()
 
-menuPrin()
+menuPrincipal()
 
 
 
