@@ -52,7 +52,6 @@ class Novedades:
 
 def formatearUsuario(regUsuario): 
   regUsuario.codUsuario = str(regUsuario.codUsuario).ljust(4)
-  regUsuario.codUsuario = regUsuario.codUsuario.ljust(4)
   regUsuario.nombreUsuario = regUsuario.nombreUsuario.ljust(100)
   regUsuario.claveUsuario = regUsuario.claveUsuario.ljust(8)
   regUsuario.tipoUsuario = regUsuario.tipoUsuario.ljust(20)
@@ -131,9 +130,10 @@ def registrarUsuario(tipoUsuario):
     tamUsuarios = alUsuarios.os.path.getsize()
     alUsuarios.seek(0)
     regUsuario = pickle.load(alUsuarios)
-    
-    codUser = 
-    regUsuario.codUsuario = 
+    tamregUsuario = alUsuarios.tell()
+    codUser = tamUsuarios//tamregUsuario
+    print(codUser)
+    regUsuario.codUsuario =codUser 
     pickle.dump(regUsuario,alUsuarios)
 
 
