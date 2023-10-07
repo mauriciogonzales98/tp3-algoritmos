@@ -156,17 +156,10 @@ def buscarUsuario(usuario):
     if (usuario == (regUsuario.nombreUsuario).rstrip()):
       b = True
 
-<<<<<<< HEAD
   if not(b):
     pos = -1
 
   return pos
-=======
-    if not(b):
-      pos = -1
-
-    return pos
->>>>>>> 5752683595b84b60ea801a507dbe9a5207f7cb1d
 # Declarativa de los menus --------------------------------------------------
 
 # MENU ADMINISTRADOR
