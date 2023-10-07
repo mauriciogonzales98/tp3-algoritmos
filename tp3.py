@@ -156,15 +156,15 @@ def buscarUsuario(usuario):
   return pos
 
 # Declarativa de los menus
-
+  # MENU ADMINISTRADOR
 def menuAdmin():
   clear()
-  print("Elija una opcion:")
+  print("Elija una opción:")
   print("1)Gestion de locales")
   print("2)Crear cuentas de dueños de locales")
   print("3)Aprobar/Denegar solicitud de descuento")
   print("4)Gestion de novedades")
-  print("5)Reporte de utilizacion de descuentos")
+  print("5)Reporte de utilización de descuentos")
   print("0)Salir")
   op = validarInput('0', '5')
 
@@ -183,6 +183,29 @@ def menuAdmin():
     else:
       clear()
       print('Adios!')
+def gestionarLocales():
+  print("a) Crear locales")
+  print("b) Modificar local") 
+  print("c) Eliminar local")
+  print("d) Mapas de locales")
+  print("e) Volver")
+
+  op = str(input("opción: "))
+
+  while op != "e":
+    clear()
+    if op == "a":
+      crear_locales()
+    if op == "b":
+      mod_local()
+    if op == "c":
+      eliminar_local()
+    if op == "d":
+      mapa_locales()
+    if op == "e":
+      clear()
+
+  # MENU DUEÑO de LOCAL
 
 def menuDueno():
   op = ''
@@ -216,6 +239,7 @@ def menuDueno():
         elif op == "3":
           repUsoDesc()
 
+  # MENU CLIENTE
 def menuCliente():
   clear()
   print('1) Registrarme')
@@ -322,30 +346,7 @@ else:
   clear()
 
 
-def gestionarLocales():
-  print("a) Crear locales")
-  print("b) Modificar local") 
-  print("c) Eliminar local")
-  print("d) Mapas de locales")
-  print("e) Volver")
 
-  op = str(input("opción: "))
-
-  while op != "a" or "b" or "c" or "d" or "e":
-    clear()
-    gestionarLocales()
-
-  if op == "a":
-    crear_locales()
-  if op == "b":
-    mod_local()
-  if op == "c":
-    eliminar_local()
-  if op == "d":
-    mapa_locales()
-  if op == "e":
-    clear()
-    menuAdmin()
 
 def crear_locales():
 
