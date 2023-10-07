@@ -89,19 +89,19 @@ def login():
     print('Ingrese contraseña:')
     contrasena = getpass()
     pos = buscarUsuario(usuario)
+    print("LA POSICION ES:", pos)
+    input()
     if pos >= 0:
       alUsuarios.seek(pos,0)
       regUsuario = pickle.load(alUsuarios)
-      if contrasena == (regUsuario.claveUsuario).rstrip():
+      if contrasena == regUsuario.claveUsuario.rstrip():
         res = pos
       else:
         clear()
         print('Contraseña incorrecta')
-        input()
     else:
       clear()
       print('Usuario inexistente')
-      input()
     intentos += 1
 
   return res
@@ -175,7 +175,6 @@ def registrarUsuario(tipoUsuario):
 #Determina qué usuario se logueó y llama al menú correspondiente -----------------------
 def usuarioLogeado(pos):
   alUsuarios.seek(pos)
-  regUsuario = pickle.load(alUsuarios)
   if (regUsuario.tipoUsuario).rstrip() == "administrador":
     menuAdmin()
   elif(regUsuario.tipoUsuario).rstrip() == "duenolocal":
@@ -225,9 +224,8 @@ def menuAdmin():
     elif op == '3':
       adSolDesc()
 
-    elif op == '4':
+    elif op == "4":
       print("codificado en chapín")
-      input()
     elif op == '5':
       utilizacionDesc()
 
@@ -247,6 +245,35 @@ def menuAdmin():
     print("0)Salir")
     print("seleccione una opción")
     op = validarInput("0","5")
+
+
+def gestionarLocales():
+  print("a) Crear locales")
+  print("b) Modificar local") 
+  print("c) Eliminar local")
+  print("d) Mapas de locales")
+  print("e) Volver")
+
+  op = input("opción: ")
+
+  while op != "e":
+    clear()
+    if op == "a":
+      crear_locales()
+
+    if op == "b":
+      mod_local()
+
+    if op == "c":
+      eliminar_local()
+        
+    if op == "d":
+      mapa_locales()
+
+    if op == "e":
+      clear()
+
+    op = input("opción: ")
 
 # MENU DUEÑO de LOCAL----------------------------------------
 def menuDueno():
@@ -304,11 +331,13 @@ def menuCliente():
 
 #Funciones del Administrador----------------------------------
 
-# def adSolDesc():
-#   alPromociones.seek(0)
-#   tamPromociones = os.path.getsize(afPromociones)
-#   while alPromociones < 
-#   regPromocion = pickle.load(alPromociones)
+def adSolDesc():
+  global reg
+  alPromociones.seek(0)
+  tamPromociones = os.path.getsize(afPromociones)
+  while alPromociones < tamPromociones:
+
+  regPromocion = pickle.load(alPromociones)
 
 
 def utilizacionDesc():
@@ -636,6 +665,7 @@ else:
 regLocal = Locales()
 
 #Abro archivo Promociones
+
 afPromociones = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\promociones.dat"
 if not os.path.exists(afPromociones):
   alPromociones = open(afPromociones, "w+b")
