@@ -108,6 +108,7 @@ def validarInput(desde, hasta):
 #Cargo datos arbitrarios para testear
 def cargaAuxiliar():
   #adm
+  global regUsuario
   regUsuario.codUsuario = 0
   regUsuario.nombreUsuario = "admin@shopping.com"
   regUsuario.claveUsuario = "12345"
@@ -135,8 +136,8 @@ def buscarUsuario(usuario):
   b = False
   alUsuarios.seek(0)
   tmUsuario = os.path.getsize(afUsuarios)
-
-  while alUsuarios.tell() < tmUsuario and not(b):
+  global regUsuario
+  while (alUsuarios.tell() < tmUsuario) and not(b):
     pos = alUsuarios.tell()
     regUsuario = pickle.load(alUsuarios)
     #No me reconoce el objeto, no se por que
@@ -265,6 +266,6 @@ elif op == '2':
   registrarCliente()
 
 else:
+  clear()
   print("Adios!")
   input()
-  clear()
