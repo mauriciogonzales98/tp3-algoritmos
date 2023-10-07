@@ -1,3 +1,4 @@
+#Mauricio Gonzales, Tomas Montaña, Lucio Zanella, Carlos Gabasio
 from getpass import getpass
 from os import system, name
 import pickle
@@ -17,37 +18,41 @@ class Usuarios:
 class Locales:
   def __init__(self):  
     self.codLocal = 0
-    self.nombreLocal = ['']*50
-    self.ubicacionLocal = ['']*50
-    self.rubroLocal = ['']*50
+    self.nombreLocal = ""
+    self.ubicacionLocal = ""
+    self.rubroLocal = ""
     self.codUsuario = 0
     self.estadoLocal = "B"
 
 class Promociones:
   def __init__(self):  
     self.codPromo = 0
-    self.textoPromo = ['']*200
-    self.fechaDesdeP = ['']*10
-    self.fechaHastaP = ['']*10
+    self.textoPromo = ""
+    self.fechaDesdeP = ""
+    self.fechaHastaP = ""
     self.diasSemana = [0]*7
-    self.estadoLocal = ['']*10
+    self.estadoLocal = ""
     self.codLocal = 0
 
 class UsoPromos:
   def __init__(self):  
     self.codCliente = 0
     self.codPromo = 0
-    self.fechaUsoPromo = ['']*50
+    self.fechaUsoPromo = ""
 
 class Novedades:
   def __init__(self):  
     self.codNovedad = 0
-    self.textNovedad = ['']*200
-    self.fechaDesdeN = ['']*10
-    self.fechaHastaN = ['']*10
-    self.tipoUsuario = ['']*20
+    self.textNovedad = ""
+    self.fechaDesdeN = ""
+    self.fechaHastaN = ""
+    self.tipoUsuario = ""
     self.estadoLocal = "B"
 
+class Rubro():
+  def __init__(self):
+    self.rubro = ""
+    self.cant = 0
 #Funciones de formateo ---------------------------------------------------------
 
 def formatearUsuario(regUsuario): 
@@ -71,7 +76,6 @@ def clear():
     _ = system('cls')
   else:
     _ = system('clear')
-
 
 #Funcion de login
 def login():
@@ -132,16 +136,22 @@ def cargaAuxiliar():
   pickle.dump(regUsuario, alUsuarios)
   alUsuarios.flush()
 
+  #Inicializo el array de rubros
+  rubros[0].rubro = "indumentaria"
+  rubros[0].cant = 0
+  rubros[1].rubro = "perfumeria"
+  rubros[1].cant = 0
+  rubros[2].rubro = "comida"
+  rubros[2].cant = 0
+
 #Funcion para registrar clientes
 def registrarUsuario(tipoUsuario):
   global regUsuario
-  email = input("ingrese su email")
-  contrasena = input("ingrese una contraseña de 8 caracteres")
+  email = input("ingrese su email: ")
+  print("ingrese una contraseña de hasta 8 caracteres: ")
+  contrasena = getpass()
 
-  if buscarUsuario (email) == -1 and contrasena.lenght() == 8:
-    regUsuario.nombreUsuario = email
-    regUsuario.claveUsuario = contrasena
-    regUsuario.tipoUsuario = tipoUsuario
+  if buscarUsuario(email) == -1 and len(contrasena) <= 8:
     tamUsuarios = os.path.getsize(afUsuarios)
     alUsuarios.seek(0)
     regUsuario = pickle.load(alUsuarios)
@@ -149,11 +159,19 @@ def registrarUsuario(tipoUsuario):
     codUser = tamUsuarios//tamregUsuario
     print(codUser)
     regUsuario.codUsuario =codUser 
+    regUsuario.nombreUsuario = email
+    regUsuario.claveUsuario = contrasena
+    regUsuario.tipoUsuario = tipoUsuario
+    formatearUsuario(regUsuario)
+    alUsuarios.seek(codUser*tamregUsuario)
     pickle.dump(regUsuario,alUsuarios)
+    alUsuarios.flush()
+    print("Usuario creado con exito!")
   else:
     print("email o contraseña inválidos, intente de nuevo")
+  input()
+  clear()
 
-  
 #Determina qué usuario se logueó y llama al menú correspondiente -----------------------
 def usuarioLogeado(pos):
   alUsuarios.seek(pos)
@@ -174,16 +192,7 @@ def buscarUsuario(usuario):
   while (alUsuarios.tell() < tmUsuario) and not(b):
     pos = alUsuarios.tell()
     regUsuario = pickle.load(alUsuarios)
-    print(regUsuario.nombreUsuario, usuario)
-    input()
-    if (usuario == regUsuario.nombreUsuario):
-      print("BANDERITA")
-      input()
-      b = True
-    #ACA ES EL ERROR, posiblemente formateo
-    print(regUsuario.nombreUsuario, usuario)
-    input()
-    if (usuario == regUsuario.nombreUsuario):
+    if (usuario == (regUsuario.nombreUsuario).rstrip()):
       b = True
 
   if not(b):
@@ -196,6 +205,7 @@ def buscarUsuario(usuario):
 
 def menuAdmin():
   clear()
+  print("ADMINISTRADOR")
   print("Elija una opción:")
   print("1)Gestion de locales")
   print("2)Crear cuentas de dueños de locales")
@@ -227,6 +237,7 @@ def menuAdmin():
       print('Adios!')
 
     clear()
+    print("ADMINISTRADOR")
     print("Elija una opción:")
     print("1)Gestion de locales")
     print("2)Crear cuentas de dueños de locales")
@@ -293,11 +304,11 @@ def menuCliente():
 
 #Funciones del Administrador----------------------------------
 
-def adSolDesc():
-  alPromociones.seek(0)
-  tamPromociones = os.path.getsize(afPromociones)
-  while alPromociones < 
-  regPromocion = pickle.load(alPromociones)
+# def adSolDesc():
+#   alPromociones.seek(0)
+#   tamPromociones = os.path.getsize(afPromociones)
+#   while alPromociones < 
+#   regPromocion = pickle.load(alPromociones)
 
 
 def utilizacionDesc():
@@ -344,31 +355,35 @@ def gestionarLocales():
 
   while op != "e":
     clear()
-    if op == "a":
-      crear_locales()
+    if op == 'a':
+      crearLocal()
 
-    if op == "b":
-      mod_local()
+    elif op == 'b':
+      modificarLocal()
 
-    if op == "c":
-      eliminar_local()
-        
-    if op == "d":
-      mapa_locales()
+    elif op == 'c':
+      eliminarLocal()
+
+    else:
+      mapaLocales()
 
     if op == "e":
       clear()
 
+    print("a) Crear locales")
+    print("b) Modificar local") 
+    print("c) Eliminar local")
+    print("d) Mapas de locales")
+    print("e) Volver")
     op = input("opción: ")
 
-def crear_locales():
+def crearLocal():
 
   op = 'y'
   while op == 'y':
     clear()
     mostrarLocales()
 
-    print('Ingrese nombre del local:')
     nombre = checkNombreLocal()
 
     print('Ingrese ubicacion:')
@@ -377,17 +392,22 @@ def crear_locales():
       print("La ubicacion es muy larga")
       ubicacion = input()
 
-    print('Codigo de dueño:')
     codDueno = checkCodigoDueno()
 
     print('Ingrese rubro:')
     rubro = rubroLocales()
 
+    tmaxLocal = os.path.getsize(afLocales)
     alLocales.seek(0)
-    regLocal = pickle.load(alLocales)
-    tRegLocal = alLocales.tell()
-    codigo = os.path.getsize(afLocales) // tRegLocal
-
+    if tmaxLocal != 0:
+      regLocal = pickle.load(alLocales)
+      tRegLocal = alLocales.tell()
+      codigo = tmaxLocal // tRegLocal
+    else:
+      codigo = 0
+    print("CODIGO ", codigo)
+    
+    regLocal = Locales()
     regLocal.nombreLocal = nombre
     regLocal.ubicacionLocal = ubicacion
     regLocal.rubroLocal = rubro
@@ -402,6 +422,81 @@ def crear_locales():
 
   # actualizarMapa()
   # mostrarRubros()
+
+def modificarLocal():
+  clear()
+  if os.path.getsize(afLocales)<=0:
+    print('No hay locales cargados')
+    input('Presione ENTER')
+  else:
+    mostrarLocales()
+    print("Ingrese el codigo del local que se desea modificar:")
+    cod = int(input())
+    res = buscarCodLocal(cod)
+    while res < 0:
+      print("El codigo no existe, ingrese otro codigo:")
+      cod = int(input())
+      res = buscarCodLocal(cod)
+
+    alLocales.seek(res)
+    regLocal = pickle.load(alLocales)
+
+    if (regLocal.estadoLocal).rstrip() != 'A':
+      print("Este local esta desactivado, deasea reactivar el local? Y/N")
+      op = validarYN()
+      if op == 'y':
+        regLocal.estadoLocal = 'A'
+      
+    if regLocal.estadoLocal == 'A':
+      print("Quiere modificar el nombre? Y/N")
+      op = validarYN()
+      if op == 'y':
+        nombre = checkNombreLocal()
+        regLocal.nombreLocal = nombre
+  
+      print("Quiere modificar la ubicacion? Y/N")
+      op = validarYN()
+      if op == 'y':
+        print("Ingrese la nueva ubicacion:")
+        ubicacion = input()
+        while len(ubicacion)<1 or len(ubicacion)>50:
+          print("La ubicacion es muy larga")
+          ubicacion = input()
+        regLocal.ubicacionLocal = ubicacion
+  
+      print("Quiere modificar el rubro? Y/N")
+      op = validarYN()
+      if op == 'y':
+        regLocal.rubroLocal = rubroLocales()
+        calcularRubros()
+
+
+  
+      print("Quiere modificar el codigo del dueño? Y/N")
+      op = validarYN()
+      if op == 'y':
+        print("Ingrese el nuevo codigo de usuario:")
+        codDueno = checkCodigoDueno()
+        regLocal.codUsuario = codDueno
+
+      formatearLocal(regLocal)
+    else:
+      print('No se puede modificar los datos de un local inactivo')
+
+def calcularRubros():
+  alLocales.seek(0)
+  tmLocales = os.path.getsize(afLocales)
+  rubros[0].cant = 0
+  rubros[1].cant = 0
+  rubros[2].cant = 0
+  while alLocales.tell() < tmLocales:
+    regLocal = pickle.load(alLocales)
+    if (regLocal.rubroLocal).rstrip() == "indumentaria":
+      rubros[0].cant += 1
+    elif (regLocal.rubroLocal).rstrip() == "perfumeria":
+      rubros[1].cant += 1
+    else:
+      rubros[2].cant += 1
 
 def checkNombreLocal():
   print("Ingrese el nombre del local a crear")
@@ -435,11 +530,11 @@ def checkCodigoDueno():
   res = buscarCodUsuario(cod)
   alUsuarios.seek(res)
   regUsuario = pickle.load(alUsuarios)
-  while res == -1 or ((regUsuario.tipoUsuario).rstrip() == "duenolocal"):
+  while res == -1 or ((regUsuario.tipoUsuario).rstrip() != "duenolocal"):
     print("El codigo ingresado no existe, ingrese otro")
     cod = int(input())
     res = buscarCodUsuario(cod)
-  return res
+  return int(regUsuario.codUsuario)
 
 def buscarCodUsuario(cod):
   alUsuarios.seek(0)
@@ -455,6 +550,7 @@ def buscarCodUsuario(cod):
   while alUsuarios.tell()<tmUsuarios and not(b):
     mid = (inicio + fin)//2
     alUsuarios.seek(mid*tUsuario)
+    pos = alUsuarios.tell()
     regUsuario = pickle.load(alUsuarios)
     if int(regUsuario.codUsuario) == cod:
       b = True
@@ -463,13 +559,47 @@ def buscarCodUsuario(cod):
     else:
       inicio = mid + 1
 
-  return (mid*tUsuario)
+  return pos
+
+def buscarCodLocal(cod):
+  alLocales.seek(0)
+  regLocal = pickle.load(alLocales)
+  tLocal = alLocales.tell()
+  tmLocales = os.path.getsize(afLocales)
+  cantLocales = tmLocales // tLocal
+  alLocales.seek(0)
+
+  inicio = 0
+  fin = cantLocales
+  b = False
+  while alLocales.tell()<tmLocales and not(b):
+    mid = (inicio + fin)//2
+    alLocales.seek(mid*tLocal)
+    pos = alLocales.tell()
+    regLocal = pickle.load(alLocales)
+    if int(regLocal.codLocal) == cod:
+      b = True
+    elif cod < int(regLocal.codLocal):
+      fin = mid - 1
+    else:
+      inicio = mid + 1
+
+  return pos
 
 def mostrarLocales():
-  print("a\n")
+  alLocales.seek(0)
+  print("Codigo Local\t Nombre\t Ubicacion\t Rubro\t Codigo Dueño\t Estado")
+  while alLocales.tell() < os.path.getsize(afLocales):
+    regLocal = pickle.load(alLocales)
+    print((regLocal.codLocal).rstrip(), (regLocal.nombreLocal).rstrip(), (regLocal.ubicacionLocal).rstrip(), (regLocal.rubroLocal).rstrip(), int(regLocal.codUsuario), (regLocal.estadoLocal).rstrip(), sep='\t', end='\n')
 
 def mostrarUsuarios():
-  print("a\n")
+  alUsuarios.seek(0)
+  tmUsuarios = os.path.getsize(afUsuarios)
+  print("Codigo Usuario\t Nombre\t Tipo usuario\t")
+  while alUsuarios.tell() < tmUsuarios:
+    regUsuario = pickle.load(alUsuarios)
+    print((regUsuario.codUsuario).rstrip(), (regUsuario.nombreUsuario).rstrip(), (regUsuario.tipoUsuario).rstrip(), sep='\t', end='\n')
 
 def rubroLocales():
   print("Elija el rubro del local")
@@ -495,8 +625,8 @@ if not os.path.exists(afUsuarios):
   alUsuarios = open(afUsuarios, "w+b")
 else:
   alUsuarios = open(afUsuarios, "r+b")
-
 regUsuario = Usuarios()
+
 #abro archivo locales
 afLocales = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\locales.dat"
 if not os.path.exists(afLocales):
@@ -513,6 +643,10 @@ else:
   alPromociones = open(afPromociones, "r+b")
 regPromocion = Promociones()
 
+global rubros 
+rubros= [Rubro()]*3
+cargaAuxiliar()
+calcularRubros()
 # Menu General
 print("Bienvenido!")
 print("Ingrese una opcion: ")
