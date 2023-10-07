@@ -48,7 +48,7 @@ class Novedades:
     self.tipoUsuario = ['']*20
     self.estadoLocal = "B"
 
-#Funciones de formateo ------------------------
+#Funciones de formateo ---------------------------------------------------------
 
 def formatearUsuario(regUsuario): 
     regUsuario.codUsuario = str(regUsuario.codUsuario).ljust(4)
@@ -97,7 +97,7 @@ def login():
 
   return res
 
-#Validacion de las opciones de los menus
+#Validacion de las opciones de los menus --------------------------------
 def validarInput(desde, hasta):
   op = input()
   while op < desde or op > hasta:
@@ -107,7 +107,7 @@ def validarInput(desde, hasta):
     clear()
   return op
 
-#Cargo datos arbitrarios para testear
+#Cargo datos arbitrarios para testear ------------------------------------
 def cargaAuxiliar():
   #adm
   global alUsuarios
@@ -121,10 +121,13 @@ def cargaAuxiliar():
   alUsuarios.flush()
 
 #Funcion para registrar clientes
-def registrarCliente():
-  print("En construccion")
+def registrarUsuario(tipoUsuario):
+  email = input("ingrese su email")
+  regUsuario=
+  
 
-#Determina que usuario se logeo y llama al menu correspondiente
+
+#Determina que usuario se logeo y llama al menu correspondiente -----------------------
 def usuarioLogeado():
 	if regUsuario.tipoUsuario == "administrador":
 		menuAdmin()
@@ -133,7 +136,7 @@ def usuarioLogeado():
 	elif regUsuario.tipoUsuario == "cliente":
 		menuCliente()
 
-#Busca un usuario en el archivo de usuarios. Barrido secuencial.
+#Busca un usuario en el archivo de usuarios. Barrido secuencial. -----------------------
 def buscarUsuario(usuario):
   b = False
   alUsuarios.seek(0)
@@ -155,7 +158,7 @@ def buscarUsuario(usuario):
 
   return pos
 
-# Declarativa de los menus
+# Declarativa de los menus --------------------------------------------------
   # MENU ADMINISTRADOR
 def menuAdmin():
   clear()
@@ -218,7 +221,7 @@ def gestionarLocales():
 
         op = str(input("opción: "))
 
-  # MENU DUEÑO de LOCAL
+# MENU DUEÑO de LOCAL----------------------------------------
 
 def menuDueno():
   op = ''
@@ -252,7 +255,7 @@ def menuDueno():
         elif op == "3":
           repUsoDesc()
 
-  # MENU CLIENTE
+# MENU CLIENTE-----------------------------------------------
 def menuCliente():
   clear()
   print('1) Registrarme')
@@ -273,7 +276,7 @@ def menuCliente():
     elif op == "4":
       verNovedades()
 
-#Funciones del Administrador
+#Funciones del Administrador----------------------------------
 def gestionarLocales():
   print("a")
 
@@ -317,9 +320,7 @@ def verNovedades():
   print("m")
 
 
-
-
-#Programa principal
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#- Programa principal -#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 
 #abro archivo usuario
