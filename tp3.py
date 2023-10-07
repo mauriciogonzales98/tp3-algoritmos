@@ -124,7 +124,7 @@ def registrarCliente():
 #Determina que usuario se logeo y llama al menu correspondiente
 def usuarioLogeado():
 	if regUsuario.tipoUsuario == "administrador":
-		menuAdministrador()
+		menuAdmin()
 	elif regUsuario.tipoUsuario == "duenolocal":
 		menuDueno()
 	elif regUsuario.tipoUsuario == "cliente":
@@ -176,7 +176,6 @@ def menuAdmin():
     else:
       clear()
       print('Adios!')
-
 
 def menuDueno():
   op = ''
