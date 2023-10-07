@@ -123,10 +123,8 @@ def cargaAuxiliar():
 def registrarUsuario(tipoUsuario):
   email = input("ingrese su email")
   contrasena = input("ingrese su contraseña")
-  if buscarUsuario (email) and buscarContrasena(contrasena) != -1:
-    print("todo bien")
-  else:
-    print("todo mal")
+  if buscarUsuario (email) != -1:
+    print("not ok")
 
 
   
@@ -162,28 +160,6 @@ def buscarUsuario(usuario):
     pos = -1
 
   return pos
-
-#Busca una contraseña en el archivo de usuarios. Barrido secuencial. -----------------------
-def buscarContrasena(contrasena)
-    b = False
-    alUsuarios.seek(0)
-    tmUsuario = os.path.getsize(afUsuarios)
-    #global regUsuario
-    while (alUsuarios.tell() < tmUsuario) and not(b):
-      pos = alUsuarios.tell()
-      regUsuario = pickle.load(alUsuarios)
-      #ACA ES EL ERROR, posiblemente formateo
-      print(regUsuario.nombreUsuario, usuario)
-      input()
-      if (usuario == regUsuario.nombreUsuario):
-        print("BANDERITA")
-        input()
-        b = True
-
-    if not(b):
-      pos = -1
-
-    return pos
 # Declarativa de los menus --------------------------------------------------
 # Menu General
 def menuPrincipal():
@@ -277,7 +253,6 @@ def gestionarLocales():
         op = str(input("opción: "))
 
 # MENU DUEÑO de LOCAL----------------------------------------
-
 def menuDueno():
   op = ''
   while op != '0':
@@ -391,7 +366,6 @@ regUsuario = Usuarios()
 cargaAuxiliar()
 
 menuPrin()
-
 
 
 
