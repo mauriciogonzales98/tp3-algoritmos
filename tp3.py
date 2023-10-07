@@ -321,12 +321,13 @@ def menuCliente():
 #Funciones del Administrador----------------------------------
 
 def adSolDesc():
-  global reg
+  global regPromocion
   alPromociones.seek(0)
   tamPromociones = os.path.getsize(afPromociones)
   while alPromociones < tamPromociones:
 
-  regPromocion = pickle.load(alPromociones)
+    regPromocion = pickle.load(alPromociones)
+    print ()
 
 
 def utilizacionDesc():
@@ -509,8 +510,17 @@ if not os.path.exists(afPromociones):
 else:
   alPromociones = open(afPromociones, "r+b")
 
-
 regPromocion = Promociones()
+
+
+# Abro archivo Locales
+afLocales = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\locales.dat"
+if not os.path.exists(afLocales):
+  alLocales = open(afLocales, "w+b")
+else:
+  alLocales = open(afLocales, "r+b")
+
+regLocal = Locales()
 
 # Menu General
 print("Bienvenido!")
