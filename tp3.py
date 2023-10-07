@@ -309,7 +309,7 @@ def menuCliente():
 #Funciones del Administrador----------------------------------
 
 def adSolDesc():
-
+  alPromociones
 
 def utilizacionDesc():
   print("d")
@@ -354,6 +354,7 @@ def crear_locales():
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#- Programa principal -#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
+# Apertura de archivos --------------------------------------------------------
 
 #abro archivo usuario
 afUsuarios = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\usuarios.dat"
@@ -362,7 +363,19 @@ if not os.path.exists(afUsuarios):
 else:
   alUsuarios = open(afUsuarios, "r+b")
 
+
 regUsuario = Usuarios()
+
+#Abro archivo Novedades
+
+afNovedades = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\novedades.dat"
+if not os.path.exists(afNovedades):
+  alNovedades = open(afNovedades, "w+b")
+else:
+  alNovedades = open(afNovedades, "r+b")
+
+
+regNovedad = Novedades()
 
 # Menu General
 print("Bienvenido!")
