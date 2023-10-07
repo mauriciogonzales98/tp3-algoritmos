@@ -128,7 +128,7 @@ def registrarUsuario(tipoUsuario):
     regUsuario.nombreUsuario = email
     regUsuario.claveUsuario = contrasena
     regUsuario.tipoUsuario = tipoUsuario
-    tamUsuarios = afUsuarios.os.path.getsize()
+    tamUsuarios = os.path.getsize(afUsuarios)
     alUsuarios.seek(0)
     regUsuario = pickle.load(alUsuarios)
     tamregUsuario = alUsuarios.tell()
@@ -308,6 +308,7 @@ def menuCliente():
 
 def adSolDesc():
   alPromociones.seek(0)
+  tamPromociones = os.path.getsize(afPromociones)
   while alPromociones < 
   regPromocion = pickle.load(alPromociones)
 
