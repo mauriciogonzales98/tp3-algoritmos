@@ -243,3 +243,51 @@ elif op == '2':
 else:
   print("Adios!")
   clear()
+
+
+def gestionarLocales():
+        print("a) Crear locales")
+        print("b) Modificar local") 
+        print("c) Eliminar local")
+        print("d) Mapas de locales")
+        print("e) Volver")
+
+        op = str(input("opción: "))
+
+        while op != "a" or "b" or "c" or "d" or "e":
+                clear()
+                gestionarLocales()
+
+        if op == "a":
+                crear_locales()
+        if op == "b":
+                mod_local()
+        if op == "c":
+                eliminar_local()
+        if op == "d":
+                mapa_locales()
+        if op == "e":
+                clear()
+                menuAdmin()
+
+         def crear_locales():
+
+                str(input("Nombre del local: "))                
+                str(input("Ubicación: "))
+                str(input("rubro: "))
+                int(input("código de usuario: "))
+
+
+
+
+
+
+
+
+        
+                       
+
+
+
+
+
