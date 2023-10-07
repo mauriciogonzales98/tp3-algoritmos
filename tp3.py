@@ -10,9 +10,9 @@ import datetime
 class Usuarios:
   def __init__(self):  
     self.codUsuario = 0
-    self.nombreUsuario = ['']*100
-    self.claveUsuario = ['']*8
-    self.tipoUsuario = ['']*20
+    self.nombreUsuario = ""
+    self.claveUsuario = ""
+    self.tipoUsuario = ""
 
 class Locales:
   def __init__(self):  
@@ -52,7 +52,7 @@ class Novedades:
 
 def formatearUsuario(regUsuario): 
     regUsuario.codUsuario = str(regUsuario.codUsuario).ljust(4)
-    #regUsuario.codUsuario = regUsuario.codUsuario.ljust(4)
+    regUsuario.codUsuario = regUsuario.codUsuario.ljust(4)
     regUsuario.nombreUsuario = regUsuario.nombreUsuario.ljust(100)
     regUsuario.claveUsuario = regUsuario.claveUsuario.ljust(8)
     regUsuario.tipoUsuario = regUsuario.tipoUsuario.ljust(20)
@@ -116,14 +116,14 @@ def cargaAuxiliar():
   regUsuario.claveUsuario = "12345"
   regUsuario.tipoUsuario = "administrador"
   alUsuarios.seek(0)
-  formatearUsuario(regUsuario)
+  #formatearUsuario(regUsuario)
   pickle.dump(regUsuario, alUsuarios)
   alUsuarios.flush()
 
 #Funcion para registrar clientes
 def registrarUsuario(tipoUsuario):
   email = input("ingrese su email")
-  regUsuario=
+  #regUsuario=
   
 
 
@@ -145,12 +145,7 @@ def buscarUsuario(usuario):
   while (alUsuarios.tell() < tmUsuario) and not(b):
     pos = alUsuarios.tell()
     regUsuario = pickle.load(alUsuarios)
-    #ACA ES EL ERROR, posiblemente formateo
-    print(regUsuario.nombreUsuario, usuario)
-    input()
     if (usuario == regUsuario.nombreUsuario):
-      print("BANDERITA")
-      input()
       b = True
 
   if not(b):
@@ -193,6 +188,7 @@ def menuAdmin():
 
     print("seleccione una opción")
     op = validarInput("0","5")
+
 def gestionarLocales():
   print("a) Crear locales")
   print("b) Modificar local") 
@@ -203,23 +199,23 @@ def gestionarLocales():
   op = str(input("opción: "))
 
   while op != "e":
-        clear()
-        if op == "a":
-          crear_locales()
+    clear()
+    if op == "a":
+      crear_locales()
 
-        if op == "b":
-          mod_local()
+    if op == "b":
+      mod_local()
 
-        if op == "c":
-         eliminar_local()
-            
-        if op == "d":
-          mapa_locales()
+    if op == "c":
+      eliminar_local()
+        
+    if op == "d":
+      mapa_locales()
 
-        if op == "e":
-          clear()
+    if op == "e":
+      clear()
 
-        op = str(input("opción: "))
+    op = str(input("opción: "))
 
 # MENU DUEÑO de LOCAL----------------------------------------
 
@@ -242,7 +238,7 @@ def menuDueno():
         print("Elija una opcion:")
         print("1)Gestión de Descuentos")
         print('    a)Crear descuento para mi local\n',
-              '   b)Modificar descuento de mi local')
+              '    b)Modificar descuento de mi local')
         print('    c)Eliminar descuento de mi local\n')
         if op == "a":
           crearDesc()
@@ -320,6 +316,13 @@ def verNovedades():
   print("m")
 
 
+def crear_locales():
+
+  input("Nombre del local: ")
+  input("Ubicación: ")
+  input("rubro: ")
+  int(input("código de usuario: "))
+
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#- Programa principal -#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 
@@ -358,28 +361,4 @@ else:
   clear()
   print("Adios!")
   clear()
-
-
-
-
-def crear_locales():
-
-  str(input("Nombre del local: "))                
-  str(input("Ubicación: "))
-  str(input("rubro: "))
-  int(input("código de usuario: "))
-
-
-
-
-
-
-
-
-        
-                       
-
-
-
-
 
