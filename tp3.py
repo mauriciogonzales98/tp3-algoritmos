@@ -107,12 +107,12 @@ def registrarCliente():
   print("En construccion")
 
 #Determina que usuario se logeo y llama al menu correspondiente
-def usuarioLogeado
-	if regUsuarios.tipoUsuario= "administrador"
+def usuarioLogeado():
+	if regUsuarios.tipoUsuario == "administrador":
 		menuAdministrador()
-	elif regUsuarios.tipoUsuario= "duenolocal"
+	elif regUsuarios.tipoUsuario == "duenolocal":
 		menuDueno()
-	elif regUsuarios.tipoUsuario = "cliente"
+	elif regUsuarios.tipoUsuario == "cliente":
 		menuCliente()
 
 #Busca un usuario en el archivo de usuarios. Barrido secuencial.
@@ -137,7 +137,7 @@ def buscarUsuario(usuario):
 # Declarativa de los menus
 
 def menuAdmin():
-	  clear()
+  clear()
   print("Elija una opcion:")
   print("1)Gestion de locales")
   print("2)Crear cuentas de dueños de locales")
@@ -156,7 +156,7 @@ def menuAdmin():
     elif op == '3':
       adSolDesc()
     elif op == "4":
-				print("codificado en chapín")
+      print("codificado en chapín")
     elif op == '5':
       utilizacionDesc()
     else:
@@ -165,7 +165,7 @@ def menuAdmin():
 
 
 def menuDueno():
-	  op = ''
+  op = ''
   while op != '0':
     clear()
     print("Elija una opcion:")
@@ -177,28 +177,27 @@ def menuDueno():
     op = validarInput('0', '3')
   
     if op == '1':
-#Submenu
+    #Submenu
       while op != 'd':
         clear()
         print("Elija una opcion:")
         print("1)Gestión de Descuentos")
         print('    a)Crear descuento para mi local\n',
               '   b)Modificar descuento de mi local')
-        print('    c)Eliminar descuento de mi local\n','
-					if op == "a":
-						crearDesc()
-					elif op == "b":
-						modDesc()
-					elif op == "c":
-						elimDesc()
-#/Submenu
-			elif op == "2":
-				adPedDesc()
-			elif op == "3":
-				repUsoDesc()
+        print('    c)Eliminar descuento de mi local\n')
+        if op == "a":
+          crearDesc()
+        elif op == "b":
+          modDesc()
+        elif op == "c":
+          elimDesc()
+        elif op == "2":
+          adPedDesc()
+        elif op == "3":
+          repUsoDesc()
 
 def menuCliente():
-	  clear()
+  clear()
   print('1) Registrarme')
   print('2) Buscar descuentos en locales')
   print('3) Solicitar descuento')
@@ -210,12 +209,12 @@ def menuCliente():
 
     if op == "1":
       registroCliente()
-			elif op == "2":
-				buscoDescuento()
-			elif op == "3":
-				solicitoDescuento()
-			elif op == "4":
-				verNovedades()
+    elif op == "2":
+      buscoDescuento()
+    elif op == "3":
+      solicitoDescuento()
+    elif op == "4":
+      verNovedades()
 
 #Programa principal
 
