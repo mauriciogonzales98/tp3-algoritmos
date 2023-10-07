@@ -174,15 +174,22 @@ def menuAdmin():
       gestionarLocales()
     elif op == '2':
       crearCuentasDuenos()
+
     elif op == '3':
       adSolDesc()
+
     elif op == "4":
       print("codificado en chapín")
     elif op == '5':
       utilizacionDesc()
+
     else:
+      print("ok")
       clear()
       print('Adios!')
+
+    print("seleccione una opción")
+    op = validarInput("0","5")
 def gestionarLocales():
   print("a) Crear locales")
   print("b) Modificar local") 
@@ -193,17 +200,23 @@ def gestionarLocales():
   op = str(input("opción: "))
 
   while op != "e":
-    clear()
-    if op == "a":
-      crear_locales()
-    if op == "b":
-      mod_local()
-    if op == "c":
-      eliminar_local()
-    if op == "d":
-      mapa_locales()
-    if op == "e":
-      clear()
+        clear()
+        if op == "a":
+          crear_locales()
+
+        if op == "b":
+          mod_local()
+
+        if op == "c":
+         eliminar_local()
+            
+        if op == "d":
+          mapa_locales()
+
+        if op == "e":
+          clear()
+
+        op = str(input("opción: "))
 
   # MENU DUEÑO de LOCAL
 
