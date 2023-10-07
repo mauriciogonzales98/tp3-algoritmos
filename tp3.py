@@ -230,6 +230,52 @@ def menuCliente():
     elif op == "4":
       verNovedades()
 
+#Funciones del Administrador
+def gestionarLocales():
+  print("a")
+
+def crearCuentasDuenos():
+  print("b")
+
+def adSolDesc():
+  print("c")
+
+def utilizacionDesc():
+  print("d")
+
+
+# Funciones del Dueño de Local
+def crearDesc():
+  print("e")
+
+def modDesc():
+ print("f")
+
+def elimDesc():
+  print("g")
+
+def adPedDesc():
+  print("h")
+
+def repUsoDesc():
+  print("i")
+
+#Funciones del Cliente
+def registroCliente():
+  print("j")
+
+def buscoDescuento():
+  print("k")
+
+def solicitoDescuento():
+  print("l")
+
+def verNovedades():
+  print("m")
+
+
+
+
 #Programa principal
 
 
