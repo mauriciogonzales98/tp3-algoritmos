@@ -48,13 +48,16 @@ class Novedades:
     self.tipoUsuario = ['']*20
     self.estadoLocal = "B"
 
-ruta = "C:\Users\PC\Desktop\TP3 algoritmos"
-afUsuarios = ruta
-if not os.path.exists(afUsuarios):
-  alUsuarios = open(afUsuarios, "w+b")
-else:
-  alUsuarios = open(afUsuarios, "r+b")
+#Funciones de formateo ------------------------
 
+def formatearUsuario(regUsuario): 
+    regUsuario.codUsuario = str(regUsuario.codUsuario)
+    regUsuario.codUsuario = regUsuario.codUsuario.ljust(4, ' ')
+    regUsuario.nombreUsuario = regUsuario.nombreUsuario.ljust(100, ' ')
+    regUsuario.claveUsuario = regUsuario.claveUsuario.ljust(8, ' ')
+    regUsuario.tipoUsuario = regUsuario.tipoUsuario.ljust(20, ' ')
+
+#---------------------------------------------
 #Funciones
 
 #Funcion clear para limpiar la consola, verifica que SO se esta usando
@@ -79,7 +82,7 @@ def login():
 
     if pos >= 0:
       alUsuarios.seek(pos)
-      regUsuario = Usuarios()
+      regUsuario = pickle.load(alUsuarios)
       if contrasena == regUsuario.claveUsuario:
         res = pos
       else:
@@ -102,6 +105,18 @@ def validarInput(desde, hasta):
     clear()
   return op
 
+#Cargo datos arbitrarios para testear
+def cargaAuxiliar():
+  #adm
+  regUsuario.codUsuario = 0
+  regUsuario.nombreUsuario = "admin@shopping.com"
+  regUsuario.claveUsuario = "12345"
+  regUsuario.tipoUsuario = "administrador"
+  alUsuarios.seek(2)
+  formatearUsuario(regUsuario)
+  pickle.dump(regUsuario, alUsuarios)
+  alUsuarios.flush()
+
 #Funcion para registrar clientes
 def registrarCliente():
   print("En construccion")
@@ -119,8 +134,7 @@ def usuarioLogeado():
 def buscarUsuario(usuario):
   b = False
   alUsuarios.seek(0)
-  regUsuario = Usuarios()
-  tmUsuario = os.path.getsize(alUsuarios)
+  tmUsuario = os.path.getsize(afUsuarios)
 
   while alUsuarios.tell() < tmUsuario and not(b):
     pos = alUsuarios.tell()
@@ -220,7 +234,16 @@ def menuCliente():
 
 
 #abro archivo usuario
+afUsuarios = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\usuarios.dat"
+if not os.path.exists(afUsuarios):
+  alUsuarios = open(afUsuarios, "w+b")
+else:
+  alUsuarios = open(afUsuarios, "r+b")
 
+regUsuario = Usuarios()
+
+#Cargo algunos datos basicos para el funcionamiento del programa
+cargaAuxiliar()
 
 print("Bienvenido!")
 print("Ingrese una opcion: ")
