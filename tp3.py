@@ -56,6 +56,13 @@ def formatearUsuario(regUsuario):
   regUsuario.claveUsuario = regUsuario.claveUsuario.ljust(8)
   regUsuario.tipoUsuario = regUsuario.tipoUsuario.ljust(20)
 
+def formatearLocal(regLocal):
+  regLocal.codLocal = str(regLocal.codLocal).ljust(4)
+  regLocal.nombreLocal = regLocal.nombreLocal.ljust(50)
+  regLocal.ubicacionLocal = regLocal.ubicacionLocal.ljust(50)
+  regLocal.rubroLocal = regLocal.rubroLocal.ljust(20)
+  regLocal.codUsuario = str(regLocal.codUsuario).ljust(4)
+  regLocal.estadoLocal = regLocal.estadoLocal.ljust(1)
 #Funciones------------------------------------------------------------------------
 
 #Funcion clear para limpiar la consola, verifica que SO se esta usando
@@ -104,6 +111,13 @@ def validarInput(desde, hasta):
     op = input()
     clear()
   return op
+
+def validarYN():
+  op = input()
+  while op.lower() != 'y' and op.lower() != 'n':
+    print('La opcion ingresada no es valida')
+    op = input()
+  return (op.lower)
 
 #Cargo datos arbitrarios para testear ------------------------------------
 def cargaAuxiliar():
@@ -349,68 +363,45 @@ def gestionarLocales():
 
 def crear_locales():
 
-  clear()
-  mostrarLocales()
-
-  print('Ingrese nombre del local:')
-  nombre = checkNombreLocal()
-
-  print('Ingrese ubicacion:')
-  ubicacion = input()
-  while len(ubicacion)<1 or len(ubicacion)>50:
-    print("La ubicacion es muy larga")
-    ubicacion = input()
-
-  print('Codigo de dueño:')
-  codDueno = checkCodigoDueno()
-
-  estadoLocal[pos] = 'A'
-
-  print('Ingrese rubro:')
-  rubro = rubroLocales(pos)
-
-  locales[pos][0] = nombre
-  locales[pos][1] = ubicacion
-  locales[pos][2] = rubro
-  codigoLocal[pos][0] = pos + 1
-  codigoLocal[pos][1] = codDueno
-  pos += 1
-  #actualizarMapa()
-
-  print('Quiere ingresar otro local? Y/N')
-  res = validarYN()
-  while res == 'y' and pos < 50:
+  op = 'y'
+  while op == 'y':
     clear()
+    mostrarLocales()
+
     print('Ingrese nombre del local:')
     nombre = checkNombreLocal()
 
-    clear()
     print('Ingrese ubicacion:')
     ubicacion = input()
+    while len(ubicacion)<1 or len(ubicacion)>50:
+      print("La ubicacion es muy larga")
+      ubicacion = input()
 
-    clear()
     print('Codigo de dueño:')
     codDueno = checkCodigoDueno()
 
-    estadoLocal[pos] = 'A'
-
-    clear()
     print('Ingrese rubro:')
-    rubro = rubroLocales(pos)
+    rubro = rubroLocales()
 
-    locales[pos][0] = nombre
-    locales[pos][1] = ubicacion
-    locales[pos][2] = rubro
-    codigoLocal[pos][0] = pos + 1
-    codigoLocal[pos][1] = codDueno
-    pos += 1
-    #actualizarMapa()
+    alLocales.seek(0)
+    regLocal = pickle.load(alLocales)
+    tRegLocal = alLocales.tell()
+    codigo = os.path.getsize(afLocales) // tRegLocal
+
+    regLocal.nombreLocal = nombre
+    regLocal.ubicacionLocal = ubicacion
+    regLocal.rubroLocal = rubro
+    regLocal.codUsuario = codDueno
+    regLocal.estadoLocal = 'A'
+    regLocal.codLocal = codigo
+    formatearLocal(regLocal)
+    pickle.dump(regLocal, alLocales)
 
     print('Quiere ingresar otro local? Y/N')
-    res = validarYN()
+    op = validarYN()
 
-  actualizarMapa()
-  mostrarRubros()
+  # actualizarMapa()
+  # mostrarRubros()
 
 def checkNombreLocal():
   print("Ingrese el nombre del local a crear")
@@ -441,40 +432,59 @@ def checkCodigoDueno():
   mostrarUsuarios()
   print("Ingrese el codigo del dueño del local")
   cod = int(input())
-  res = buscarCodDueno(cod)
-  if res == -1:
-    print("El codigo ingresado no existe")
-    
+  res = buscarCodUsuario(cod)
+  alUsuarios.seek(res)
+  regUsuario = pickle.load(alUsuarios)
+  while res == -1 or ((regUsuario.tipoUsuario).rstrip() == "duenolocal"):
+    print("El codigo ingresado no existe, ingrese otro")
+    cod = int(input())
+    res = buscarCodUsuario(cod)
+  return res
 
-def buscarCodDueno(cod):
-  alLocales.seek(0)
-  regLocal = pickle.load(alLocales)
-  tLocal = alLocales.tell()
-  tmLocal = os.path.getsize(afLocales)
-  cantLocal = tmLocal // tLocal
-  alLocales.seek(0)
+def buscarCodUsuario(cod):
+  alUsuarios.seek(0)
+  regUsuario = pickle.load(alUsuarios)
+  tUsuario = alUsuarios.tell()
+  tmUsuarios = os.path.getsize(afUsuarios)
+  cantUsuarios = tmUsuarios // tUsuario
+  alUsuarios.seek(0)
 
   inicio = 0
-  fin = tmLocal
+  fin = cantUsuarios
   b = False
-  while alLocales.tell()<tmLocal and not(b):
+  while alUsuarios.tell()<tmUsuarios and not(b):
     mid = (inicio + fin)//2
-    alLocales.seek(mid*tLocal)
-    regLocal = pickle.load(alLocales)
-    if int(regLocal.codLocal) == cod:
+    alUsuarios.seek(mid*tUsuario)
+    regUsuario = pickle.load(alUsuarios)
+    if int(regUsuario.codUsuario) == cod:
       b = True
-    elif cod < int(regLocal.codLocal):
+    elif cod < int(regUsuario.codUsuario):
       fin = mid - 1
     else:
       inicio = mid + 1
 
-  return mid
+  return (mid*tUsuario)
 
 def mostrarLocales():
   print("a\n")
 
 def mostrarUsuarios():
   print("a\n")
+
+def rubroLocales():
+  print("Elija el rubro del local")
+  print("1) Perfumeria")
+  print("2) Indumentaria")
+  print("3) Comida")
+  op = validarInput('1', '3')
+  if op == '1':
+    r = "perfumeria"
+  elif op == '2':
+    r = "indumentaria"
+  else:
+    r = "comida"
+  #actualizarRubros(r, id)
+  return r
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#- Programa principal -#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 # Apertura de archivos --------------------------------------------------------
