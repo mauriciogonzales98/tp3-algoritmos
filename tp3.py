@@ -127,7 +127,7 @@ def registrarCliente():
 #Determina que usuario se logeo y llama al menu correspondiente
 def usuarioLogeado():
 	if regUsuario.tipoUsuario == "administrador":
-		menuAdministrador()
+		menuAdmin()
 	elif regUsuario.tipoUsuario == "duenolocal":
 		menuDueno()
 	elif regUsuario.tipoUsuario == "cliente":
@@ -184,7 +184,6 @@ def menuAdmin():
       clear()
       print('Adios!')
 
-
 def menuDueno():
   op = ''
   while op != '0':
@@ -236,6 +235,52 @@ def menuCliente():
       solicitoDescuento()
     elif op == "4":
       verNovedades()
+
+#Funciones del Administrador
+def gestionarLocales():
+  print("a")
+
+def crearCuentasDuenos():
+  print("b")
+
+def adSolDesc():
+  print("c")
+
+def utilizacionDesc():
+  print("d")
+
+
+# Funciones del Dueño de Local
+def crearDesc():
+  print("e")
+
+def modDesc():
+ print("f")
+
+def elimDesc():
+  print("g")
+
+def adPedDesc():
+  print("h")
+
+def repUsoDesc():
+  print("i")
+
+#Funciones del Cliente
+def registroCliente():
+  print("j")
+
+def buscoDescuento():
+  print("k")
+
+def solicitoDescuento():
+  print("l")
+
+def verNovedades():
+  print("m")
+
+
+
 
 #Programa principal
 
