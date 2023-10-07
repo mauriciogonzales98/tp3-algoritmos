@@ -78,19 +78,19 @@ def login():
     print('Ingrese contraseña:')
     contrasena = getpass()
     pos = buscarUsuario(usuario)
+    print("LA POSICION ES:", pos)
+    input()
     if pos >= 0:
       alUsuarios.seek(pos,0)
       regUsuario = pickle.load(alUsuarios)
-      if contrasena == (regUsuario.claveUsuario).rstrip():
+      if contrasena == regUsuario.claveUsuario.rstrip():
         res = pos
       else:
         clear()
         print('Contraseña incorrecta')
-        input()
     else:
       clear()
       print('Usuario inexistente')
-      input()
     intentos += 1
 
   return res
@@ -143,7 +143,6 @@ def registrarUsuario(tipoUsuario):
 #Determina qué usuario se logueó y llama al menú correspondiente -----------------------
 def usuarioLogeado(pos):
   alUsuarios.seek(pos)
-  regUsuario = pickle.load(alUsuarios)
   if (regUsuario.tipoUsuario).rstrip() == "administrador":
     menuAdmin()
   elif(regUsuario.tipoUsuario).rstrip() == "duenolocal":
@@ -201,9 +200,8 @@ def menuAdmin():
     elif op == '3':
       adSolDesc()
 
-    elif op == '4':
+    elif op == "4":
       print("codificado en chapín")
-      input()
     elif op == '5':
       utilizacionDesc()
 
@@ -222,6 +220,35 @@ def menuAdmin():
     print("0)Salir")
     print("seleccione una opción")
     op = validarInput("0","5")
+
+
+def gestionarLocales():
+  print("a) Crear locales")
+  print("b) Modificar local") 
+  print("c) Eliminar local")
+  print("d) Mapas de locales")
+  print("e) Volver")
+
+  op = input("opción: ")
+
+  while op != "e":
+    clear()
+    if op == "a":
+      crear_locales()
+
+    if op == "b":
+      mod_local()
+
+    if op == "c":
+      eliminar_local()
+        
+    if op == "d":
+      mapa_locales()
+
+    if op == "e":
+      clear()
+
+    op = input("opción: ")
 
 # MENU DUEÑO de LOCAL----------------------------------------
 def menuDueno():
@@ -280,9 +307,11 @@ def menuCliente():
 #Funciones del Administrador----------------------------------
 
 def adSolDesc():
+  global reg
   alPromociones.seek(0)
   tamPromociones = os.path.getsize(afPromociones)
-  while alPromociones < 
+  while alPromociones < tamPromociones:
+
   regPromocion = pickle.load(alPromociones)
 
 
@@ -319,162 +348,14 @@ def solicitoDescuento():
 def verNovedades():
   print("m")
 
-def gestionarLocales():
-  print("a) Crear locales")
-  print("b) Modificar local") 
-  print("c) Eliminar local")
-  print("d) Mapas de locales")
-  print("e) Volver")
-
-  op = input("opción: ")
-
-  while op != "e":
-    clear()
-    if op == "a":
-      crear_locales()
-
-    if op == "b":
-      mod_local()
-
-    if op == "c":
-      eliminar_local()
-        
-    if op == "d":
-      mapa_locales()
-
-    if op == "e":
-      clear()
-
-    op = input("opción: ")
 
 def crear_locales():
 
-  clear()
-  mostrarLocales()
+  input("Nombre del local: ")
+  input("Ubicación: ")
+  input("rubro: ")
+  int(input("código de usuario: "))
 
-  print('Ingrese nombre del local:')
-  nombre = checkNombreLocal()
-
-  print('Ingrese ubicacion:')
-  ubicacion = input()
-  while len(ubicacion)<1 or len(ubicacion)>50:
-    print("La ubicacion es muy larga")
-    ubicacion = input()
-
-  print('Codigo de dueño:')
-  codDueno = checkCodigoDueno()
-
-  estadoLocal[pos] = 'A'
-
-  print('Ingrese rubro:')
-  rubro = rubroLocales(pos)
-
-  locales[pos][0] = nombre
-  locales[pos][1] = ubicacion
-  locales[pos][2] = rubro
-  codigoLocal[pos][0] = pos + 1
-  codigoLocal[pos][1] = codDueno
-  pos += 1
-  #actualizarMapa()
-
-  print('Quiere ingresar otro local? Y/N')
-  res = validarYN()
-  while res == 'y' and pos < 50:
-    clear()
-    print('Ingrese nombre del local:')
-    nombre = checkNombreLocal()
-
-    clear()
-    print('Ingrese ubicacion:')
-    ubicacion = input()
-
-    clear()
-    print('Codigo de dueño:')
-    codDueno = checkCodigoDueno()
-
-    estadoLocal[pos] = 'A'
-
-    clear()
-    print('Ingrese rubro:')
-    rubro = rubroLocales(pos)
-
-    locales[pos][0] = nombre
-    locales[pos][1] = ubicacion
-    locales[pos][2] = rubro
-    codigoLocal[pos][0] = pos + 1
-    codigoLocal[pos][1] = codDueno
-    pos += 1
-    #actualizarMapa()
-
-    print('Quiere ingresar otro local? Y/N')
-    res = validarYN()
-
-  actualizarMapa()
-  mostrarRubros()
-
-def checkNombreLocal():
-  print("Ingrese el nombre del local a crear")
-  local = input()
-  res = buscarLocal(local)
-  while (len(local) < 1 or len(local)>50) and res != -1: 
-    print("Este nombre no esta disponible, ingrese otro por favor")
-    local = input()
-    res = buscarLocal(local)
-  return local
-
-def buscarLocal(nombre):
-  b = False
-  alLocales.seek(0)
-  tmLocales = os.path.getsize(afLocales)
-  while (alLocales.tell() < tmLocales) and not(b):
-    pos = alLocales.tell()
-    regLocal = pickle.load(alLocales)
-    if (nombre == (regLocal.nombreLocal).rstrip()):
-      b = True
-
-  if not(b):
-    pos = -1
-
-  return pos
-
-def checkCodigoDueno():
-  mostrarUsuarios()
-  print("Ingrese el codigo del dueño del local")
-  cod = int(input())
-  res = buscarCodDueno(cod)
-  if res == -1:
-    print("El codigo ingresado no existe")
-    
-
-def buscarCodDueno(cod):
-  alLocales.seek(0)
-  regLocal = pickle.load(alLocales)
-  tLocal = alLocales.tell()
-  tmLocal = os.path.getsize(afLocales)
-  cantLocal = tmLocal // tLocal
-  alLocales.seek(0)
-
-  inicio = 0
-  fin = tmLocal
-  b = False
-  while alLocales.tell()<tmLocal and not(b):
-    mid = (inicio + fin)//2
-    alLocales.seek(mid*tLocal)
-    regLocal = pickle.load(alLocales)
-    if int(regLocal.codLocal) == cod:
-      b = True
-    elif cod < int(regLocal.codLocal):
-      fin = mid - 1
-    else:
-      inicio = mid + 1
-
-  return mid
-
-def mostrarLocales():
-  print("a\n")
-
-def mostrarUsuarios():
-  print("a\n")
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#- Programa principal -#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 # Apertura de archivos --------------------------------------------------------
@@ -486,21 +367,18 @@ if not os.path.exists(afUsuarios):
 else:
   alUsuarios = open(afUsuarios, "r+b")
 
+
 regUsuario = Usuarios()
-#abro archivo locales
-afLocales = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\locales.dat"
-if not os.path.exists(afLocales):
-  alLocales = open(afLocales, "w+b")
-else:
-  alLocales = open(afLocales, "r+b")
-regLocal = Locales()
 
 #Abro archivo Promociones
+
 afPromociones = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\promociones.dat"
 if not os.path.exists(afPromociones):
   alPromociones = open(afPromociones, "w+b")
 else:
   alPromociones = open(afPromociones, "r+b")
+
+
 regPromocion = Promociones()
 
 # Menu General
