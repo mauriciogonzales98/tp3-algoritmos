@@ -81,7 +81,7 @@ def login():
     pos = buscarUsuario(usuario)
 
     if pos >= 0:
-      alUsuarios.seek(pos)
+      alUsuarios.seek(pos,0)
       regUsuario = pickle.load(alUsuarios)
       if contrasena == regUsuario.claveUsuario:
         res = pos
@@ -123,11 +123,11 @@ def registrarCliente():
 
 #Determina que usuario se logeo y llama al menu correspondiente
 def usuarioLogeado():
-	if regUsuarios.tipoUsuario == "administrador":
+	if regUsuario.tipoUsuario == "administrador":
 		menuAdministrador()
-	elif regUsuarios.tipoUsuario == "duenolocal":
+	elif regUsuario.tipoUsuario == "duenolocal":
 		menuDueno()
-	elif regUsuarios.tipoUsuario == "cliente":
+	elif regUsuario.tipoUsuario == "cliente":
 		menuCliente()
 
 #Busca un usuario en el archivo de usuarios. Barrido secuencial.
@@ -259,10 +259,12 @@ if op == '1':
     usuarioLogeado()
   else:
     print("La contraseña se ha ingresado incorrectamente demasiadas veces")
+    input()
 
 elif op == '2':
   registrarCliente()
 
 else:
   print("Adios!")
+  input()
   clear()
