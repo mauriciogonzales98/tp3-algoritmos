@@ -319,6 +319,33 @@ def solicitoDescuento():
 def verNovedades():
   print("m")
 
+def gestionarLocales():
+  print("a) Crear locales")
+  print("b) Modificar local") 
+  print("c) Eliminar local")
+  print("d) Mapas de locales")
+  print("e) Volver")
+
+  op = input("opción: ")
+
+  while op != "e":
+    clear()
+    if op == "a":
+      crear_locales()
+
+    if op == "b":
+      mod_local()
+
+    if op == "c":
+      eliminar_local()
+        
+    if op == "d":
+      mapa_locales()
+
+    if op == "e":
+      clear()
+
+    op = input("opción: ")
 
 def crear_locales():
 
@@ -469,14 +496,11 @@ else:
 regLocal = Locales()
 
 #Abro archivo Promociones
-
 afPromociones = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\promociones.dat"
 if not os.path.exists(afPromociones):
   alPromociones = open(afPromociones, "w+b")
 else:
   alPromociones = open(afPromociones, "r+b")
-
-
 regPromocion = Promociones()
 
 # Menu General
