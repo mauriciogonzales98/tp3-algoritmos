@@ -51,11 +51,11 @@ class Novedades:
 #Funciones de formateo ------------------------
 
 def formatearUsuario(regUsuario): 
-    regUsuario.codUsuario = str(regUsuario.codUsuario)
-    regUsuario.codUsuario = regUsuario.codUsuario.ljust(4, ' ')
-    regUsuario.nombreUsuario = regUsuario.nombreUsuario.ljust(100, ' ')
-    regUsuario.claveUsuario = regUsuario.claveUsuario.ljust(8, ' ')
-    regUsuario.tipoUsuario = regUsuario.tipoUsuario.ljust(20, ' ')
+    regUsuario.codUsuario = str(regUsuario.codUsuario).ljust(4)
+    #regUsuario.codUsuario = regUsuario.codUsuario.ljust(4)
+    regUsuario.nombreUsuario = regUsuario.nombreUsuario.ljust(100)
+    regUsuario.claveUsuario = regUsuario.claveUsuario.ljust(8)
+    regUsuario.tipoUsuario = regUsuario.tipoUsuario.ljust(20)
 
 #---------------------------------------------
 #Funciones
@@ -70,6 +70,7 @@ def clear():
 
 #Funcion de login
 def login():
+  global alUsuarios
   res = -1
   intentos = 0
   while res < 0 and intentos < 3:
@@ -79,7 +80,8 @@ def login():
     print('Ingrese contraseña:')
     contrasena = getpass()
     pos = buscarUsuario(usuario)
-
+    print("LA POSICION ES:", pos)
+    input()
     if pos >= 0:
       alUsuarios.seek(pos,0)
       regUsuario = pickle.load(alUsuarios)
@@ -108,12 +110,12 @@ def validarInput(desde, hasta):
 #Cargo datos arbitrarios para testear
 def cargaAuxiliar():
   #adm
-  global regUsuario
+  global alUsuarios
   regUsuario.codUsuario = 0
   regUsuario.nombreUsuario = "admin@shopping.com"
   regUsuario.claveUsuario = "12345"
   regUsuario.tipoUsuario = "administrador"
-  alUsuarios.seek(2)
+  alUsuarios.seek(0)
   formatearUsuario(regUsuario)
   pickle.dump(regUsuario, alUsuarios)
   alUsuarios.flush()
@@ -136,12 +138,16 @@ def buscarUsuario(usuario):
   b = False
   alUsuarios.seek(0)
   tmUsuario = os.path.getsize(afUsuarios)
-  global regUsuario
+  #global regUsuario
   while (alUsuarios.tell() < tmUsuario) and not(b):
     pos = alUsuarios.tell()
     regUsuario = pickle.load(alUsuarios)
-    #No me reconoce el objeto, no se por que
-    if usuario == regUsuario.nombreUsuario:
+    #ACA ES EL ERROR, posiblemente formateo
+    print(regUsuario.nombreUsuario, usuario)
+    input()
+    if (usuario == regUsuario.nombreUsuario):
+      print("BANDERITA")
+      input()
       b = True
 
   if not(b):
