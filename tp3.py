@@ -140,8 +140,6 @@ def registrarUsuario(tipoUsuario):
     print("email o contraseña inválidos, intente de nuevo")
 
   
-
-
 #Determina qué usuario se logueó y llama al menú correspondiente -----------------------
 def usuarioLogeado(pos):
   alUsuarios.seek(pos)
@@ -309,7 +307,7 @@ def menuCliente():
 #Funciones del Administrador----------------------------------
 
 def adSolDesc():
-  alPromociones
+  al
 
 def utilizacionDesc():
   print("d")
@@ -366,16 +364,16 @@ else:
 
 regUsuario = Usuarios()
 
-#Abro archivo Novedades
+#Abro archivo Promociones
 
-afNovedades = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\novedades.dat"
-if not os.path.exists(afNovedades):
-  alNovedades = open(afNovedades, "w+b")
+afPromociones = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\promociones.dat"
+if not os.path.exists(afPromociones):
+  alPromociones = open(afPromociones, "w+b")
 else:
-  alNovedades = open(afNovedades, "r+b")
+  alPromociones = open(afPromociones, "r+b")
 
 
-regNovedad = Novedades()
+regPromocion = Promociones()
 
 # Menu General
 print("Bienvenido!")
