@@ -52,7 +52,6 @@ class Novedades:
 
 def formatearUsuario(regUsuario): 
   regUsuario.codUsuario = str(regUsuario.codUsuario).ljust(4)
-  #regUsuario.codUsuario = regUsuario.codUsuario.ljust(4)
   regUsuario.nombreUsuario = regUsuario.nombreUsuario.ljust(100)
   regUsuario.claveUsuario = regUsuario.claveUsuario.ljust(8)
   regUsuario.tipoUsuario = regUsuario.tipoUsuario.ljust(20)
@@ -123,17 +122,24 @@ def cargaAuxiliar():
 def registrarUsuario(tipoUsuario):
   global regUsuario
   email = input("ingrese su email")
-  contrasena = input("ingrese su contraseña")
-  if buscarUsuario(email) != -1:
+  contrasena = input("ingrese una contraseña de 8 caracteres")
+
+  if buscarUsuario (email) == -1 and contrasena.lenght() == 8:
     regUsuario.nombreUsuario = email
     regUsuario.claveUsuario = contrasena
     regUsuario.tipoUsuario = tipoUsuario
-
-
+    tamUsuarios = os.path.getsize(afUsuarios)
+    alUsuarios.seek(0)
+    regUsuario = pickle.load(alUsuarios)
+    tamregUsuario = alUsuarios.tell()
+    codUser = tamUsuarios//tamregUsuario
+    print(codUser)
+    regUsuario.codUsuario =codUser 
+    pickle.dump(regUsuario,alUsuarios)
+  else:
+    print("email o contraseña inválidos, intente de nuevo")
 
   
-
-
 #Determina qué usuario se logueó y llama al menú correspondiente -----------------------
 def usuarioLogeado(pos):
   alUsuarios.seek(pos)
@@ -154,7 +160,16 @@ def buscarUsuario(usuario):
   while (alUsuarios.tell() < tmUsuario) and not(b):
     pos = alUsuarios.tell()
     regUsuario = pickle.load(alUsuarios)
-    if (usuario == (regUsuario.nombreUsuario).rstrip()):
+    print(regUsuario.nombreUsuario, usuario)
+    input()
+    if (usuario == regUsuario.nombreUsuario):
+      print("BANDERITA")
+      input()
+      b = True
+    #ACA ES EL ERROR, posiblemente formateo
+    print(regUsuario.nombreUsuario, usuario)
+    input()
+    if (usuario == regUsuario.nombreUsuario):
       b = True
 
   if not(b):
@@ -181,7 +196,7 @@ def menuAdmin():
     if op == '1':
       gestionarLocales()
     elif op == '2':
-      crearCuentasDuenos()
+      registrarUsuario("duenolocal")
 
     elif op == '3':
       adSolDesc()
@@ -263,39 +278,13 @@ def menuCliente():
       verNovedades()
 
 #Funciones del Administrador----------------------------------
-def gestionarLocales():
-  print("a) Crear locales")
-  print("b) Modificar local") 
-  print("c) Eliminar local")
-  print("d) Mapas de locales")
-  print("e) Volver")
-
-  op = input("opción: ")
-
-  while op != "e":
-    clear()
-    if op == "a":
-      crear_locales()
-
-    if op == "b":
-      mod_local()
-
-    if op == "c":
-      eliminar_local()
-        
-    if op == "d":
-      mapa_locales()
-
-    if op == "e":
-      clear()
-
-    op = input("opción: ")
-
-def crearCuentasDuenos():
-  print("b")
 
 def adSolDesc():
-  print("c")
+  alPromociones.seek(0)
+  tamPromociones = os.path.getsize(afPromociones)
+  while alPromociones < 
+  regPromocion = pickle.load(alPromociones)
+
 
 def utilizacionDesc():
   print("d")
@@ -461,6 +450,7 @@ def mostrarUsuarios():
   print("a\n")
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#- Programa principal -#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
+# Apertura de archivos --------------------------------------------------------
 
 #abro archivo usuario
 afUsuarios = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\usuarios.dat"
@@ -468,6 +458,7 @@ if not os.path.exists(afUsuarios):
   alUsuarios = open(afUsuarios, "w+b")
 else:
   alUsuarios = open(afUsuarios, "r+b")
+
 regUsuario = Usuarios()
 #abro archivo locales
 afLocales = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\locales.dat"
@@ -476,6 +467,17 @@ if not os.path.exists(afLocales):
 else:
   alLocales = open(afLocales, "r+b")
 regLocal = Locales()
+
+#Abro archivo Promociones
+
+afPromociones = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\promociones.dat"
+if not os.path.exists(afPromociones):
+  alPromociones = open(afPromociones, "w+b")
+else:
+  alPromociones = open(afPromociones, "r+b")
+
+
+regPromocion = Promociones()
 
 # Menu General
 print("Bienvenido!")
