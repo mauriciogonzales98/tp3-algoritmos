@@ -51,11 +51,11 @@ class Novedades:
 #Funciones de formateo ---------------------------------------------------------
 
 def formatearUsuario(regUsuario): 
-    regUsuario.codUsuario = str(regUsuario.codUsuario).ljust(4)
-    regUsuario.codUsuario = regUsuario.codUsuario.ljust(4)
-    regUsuario.nombreUsuario = regUsuario.nombreUsuario.ljust(100)
-    regUsuario.claveUsuario = regUsuario.claveUsuario.ljust(8)
-    regUsuario.tipoUsuario = regUsuario.tipoUsuario.ljust(20)
+  regUsuario.codUsuario = str(regUsuario.codUsuario).ljust(4)
+  regUsuario.codUsuario = regUsuario.codUsuario.ljust(4)
+  regUsuario.nombreUsuario = regUsuario.nombreUsuario.ljust(100)
+  regUsuario.claveUsuario = regUsuario.claveUsuario.ljust(8)
+  regUsuario.tipoUsuario = regUsuario.tipoUsuario.ljust(20)
 
 #Funciones------------------------------------------------------------------------
 
@@ -84,7 +84,7 @@ def login():
     if pos >= 0:
       alUsuarios.seek(pos,0)
       regUsuario = pickle.load(alUsuarios)
-      if contrasena == regUsuario.claveUsuario:
+      if contrasena == regUsuario.claveUsuario.rstrip():
         res = pos
       else:
         clear()
@@ -115,7 +115,7 @@ def cargaAuxiliar():
   regUsuario.claveUsuario = "12345"
   regUsuario.tipoUsuario = "administrador"
   alUsuarios.seek(0)
-  #formatearUsuario(regUsuario)
+  formatearUsuario(regUsuario)
   pickle.dump(regUsuario, alUsuarios)
   alUsuarios.flush()
 
@@ -141,13 +141,14 @@ def registrarUsuario(tipoUsuario):
 
 
 #Determina qué usuario se logueó y llama al menú correspondiente -----------------------
-def usuarioLogeado():
-	if regUsuario.tipoUsuario == "administrador":
-		menuAdmin()
-	elif regUsuario.tipoUsuario == "duenolocal":
-		menuDueno()
-	elif regUsuario.tipoUsuario == "cliente":
-		menuCliente()
+def usuarioLogeado(pos):
+  alUsuarios.seek(pos)
+  if (regUsuario.tipoUsuario).rstrip() == "administrador":
+    menuAdmin()
+  elif(regUsuario.tipoUsuario).rstrip() == "duenolocal":
+    menuDueno()
+  elif (regUsuario.tipoUsuario).rstrip() == "cliente":
+    menuCliente()
 
 #Busca un usuario en el archivo de usuarios. Barrido secuencial. -----------------------
 def buscarUsuario(usuario):
@@ -175,32 +176,6 @@ def buscarUsuario(usuario):
 
   return pos
 # Declarativa de los menus --------------------------------------------------
-# Menu General
-def menuPrincipal():
-    print("Bienvenido!")
-    print("Ingrese una opcion: ")
-    print("1) Ingresar con usuario registrado.")
-    print("2) Registrarse como cliente.")
-    print("3) Salir.")
-
-    op = validarInput("1", "3")
-
-    if op == '1':
-     res = login()
-     if res != -1:
-      usuarioLogeado()
-     else:
-      print("La contraseña se ha ingresado incorrectamente demasiadas veces")
-      input()
-
-    elif op == '2':
-      registrarUsuario("cliente")
-
-    else:
-      clear()
-      print("Adios!")
-      clear()
-
 
 # MENU ADMINISTRADOR
 
@@ -235,6 +210,14 @@ def menuAdmin():
       clear()
       print('Adios!')
 
+    clear()
+    print("Elija una opción:")
+    print("1)Gestion de locales")
+    print("2)Crear cuentas de dueños de locales")
+    print("3)Aprobar/Denegar solicitud de descuento")
+    print("4)Gestion de novedades")
+    print("5)Reporte de utilización de descuentos")
+    print("0)Salir")
     print("seleccione una opción")
     op = validarInput("0","5")
 
@@ -246,7 +229,7 @@ def gestionarLocales():
   print("d) Mapas de locales")
   print("e) Volver")
 
-  op = str(input("opción: "))
+  op = input("opción: ")
 
   while op != "e":
     clear()
@@ -265,7 +248,7 @@ def gestionarLocales():
     if op == "e":
       clear()
 
-    op = str(input("opción: "))
+    op = input("opción: ")
 
 # MENU DUEÑO de LOCAL----------------------------------------
 def menuDueno():
@@ -383,8 +366,27 @@ else:
 
 regUsuario = Usuarios()
 
-#Cargo algunos datos basicos para el funcionamiento del programa
-cargaAuxiliar()
+# Menu General
+print("Bienvenido!")
+print("Ingrese una opcion: ")
+print("1) Ingresar con usuario registrado.")
+print("2) Registrarse como cliente.")
+print("3) Salir.")
 
-menuPrincipal()
+op = validarInput("1", "3")
 
+if op == '1':
+  res = login()
+  if res != -1:
+    usuarioLogeado(res)
+  else:
+    print("La contraseña se ha ingresado incorrectamente demasiadas veces")
+    input()
+
+elif op == '2':
+  registrarCliente()
+
+else:
+  clear()
+  print("Adios!")
+  input()
