@@ -121,12 +121,14 @@ def cargaAuxiliar():
 
 #Funcion para registrar clientes
 def registrarUsuario(tipoUsuario):
+  global regUsuario
   email = input("ingrese su email")
   contrasena = input("ingrese su contraseña")
-  if buscarUsuario(email) and buscarContrasena(contrasena) != -1:
-    print("todo bien")
-  else:
-    print("todo mal")
+  if buscarUsuario(email) != -1:
+    regUsuario.nombreUsuario = email
+    regUsuario.claveUsuario = contrasena
+    regUsuario.tipoUsuario = tipoUsuario
+
 
 
   
@@ -154,10 +156,17 @@ def buscarUsuario(usuario):
     if (usuario == (regUsuario.nombreUsuario).rstrip()):
       b = True
 
+<<<<<<< HEAD
+  if not(b):
+    pos = -1
+
+  return pos
+=======
     if not(b):
       pos = -1
 
     return pos
+>>>>>>> 5752683595b84b60ea801a507dbe9a5207f7cb1d
 # Declarativa de los menus --------------------------------------------------
 
 # MENU ADMINISTRADOR
@@ -234,7 +243,6 @@ def gestionarLocales():
     op = input("opción: ")
 
 # MENU DUEÑO de LOCAL----------------------------------------
-
 def menuDueno():
   op = ''
   while op != '0':
