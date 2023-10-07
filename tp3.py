@@ -6,7 +6,7 @@ import io
 import time
 import datetime
 
-#Declaraciones de clases
+#Declaraciones de clases -------------------------------------------------
 class Usuarios:
   def __init__(self):  
     self.codUsuario = 0
@@ -57,8 +57,7 @@ def formatearUsuario(regUsuario):
     regUsuario.claveUsuario = regUsuario.claveUsuario.ljust(8)
     regUsuario.tipoUsuario = regUsuario.tipoUsuario.ljust(20)
 
-#---------------------------------------------
-#Funciones
+#Funciones------------------------------------------------------------------------
 
 #Funcion clear para limpiar la consola, verifica que SO se esta usando
 def clear():
@@ -123,11 +122,17 @@ def cargaAuxiliar():
 #Funcion para registrar clientes
 def registrarUsuario(tipoUsuario):
   email = input("ingrese su email")
-  regUsuario=
+  contrasena = input("ingrese su contraseña")
+  if buscarUsuario (email) and buscarContrasena(contrasena) != -1:
+    print("todo bien")
+  else:
+    print("todo mal")
+
+
   
 
 
-#Determina que usuario se logeo y llama al menu correspondiente -----------------------
+#Determina qué usuario se logueó y llama al menú correspondiente -----------------------
 def usuarioLogeado():
 	if regUsuario.tipoUsuario == "administrador":
 		menuAdmin()
@@ -158,8 +163,57 @@ def buscarUsuario(usuario):
 
   return pos
 
+#Busca una contraseña en el archivo de usuarios. Barrido secuencial. -----------------------
+def buscarContrasena(contrasena)
+    b = False
+    alUsuarios.seek(0)
+    tmUsuario = os.path.getsize(afUsuarios)
+    #global regUsuario
+    while (alUsuarios.tell() < tmUsuario) and not(b):
+      pos = alUsuarios.tell()
+      regUsuario = pickle.load(alUsuarios)
+      #ACA ES EL ERROR, posiblemente formateo
+      print(regUsuario.nombreUsuario, usuario)
+      input()
+      if (usuario == regUsuario.nombreUsuario):
+        print("BANDERITA")
+        input()
+        b = True
+
+    if not(b):
+      pos = -1
+
+    return pos
 # Declarativa de los menus --------------------------------------------------
-  # MENU ADMINISTRADOR
+# Menu General
+def menuPrincipal():
+    print("Bienvenido!")
+    print("Ingrese una opcion: ")
+    print("1) Ingresar con usuario registrado.")
+    print("2) Registrarse como cliente.")
+    print("3) Salir.")
+
+    op = validarInput("1", "3")
+
+    if op == '1':
+     res = login()
+     if res != -1:
+      usuarioLogeado()
+     else:
+      print("La contraseña se ha ingresado incorrectamente demasiadas veces")
+      input()
+
+    elif op == '2':
+      registrarCliente()
+
+    else:
+      clear()
+      print("Adios!")
+      clear()
+
+
+# MENU ADMINISTRADOR
+
 def menuAdmin():
   clear()
   print("Elija una opción:")
@@ -193,6 +247,7 @@ def menuAdmin():
 
     print("seleccione una opción")
     op = validarInput("0","5")
+
 def gestionarLocales():
   print("a) Crear locales")
   print("b) Modificar local") 
@@ -335,29 +390,8 @@ regUsuario = Usuarios()
 #Cargo algunos datos basicos para el funcionamiento del programa
 cargaAuxiliar()
 
-print("Bienvenido!")
-print("Ingrese una opcion: ")
-print("1) Ingresar con usuario registrado.")
-print("2) Registrarse como cliente.")
-print("3) Salir.")
+menuPrin()
 
-op = validarInput("1", "3")
-
-if op == '1':
-  res = login()
-  if res != -1:
-    usuarioLogeado()
-  else:
-    print("La contraseña se ha ingresado incorrectamente demasiadas veces")
-    input()
-
-elif op == '2':
-  registrarCliente()
-
-else:
-  clear()
-  print("Adios!")
-  clear()
 
 
 
@@ -368,18 +402,3 @@ def crear_locales():
   str(input("Ubicación: "))
   str(input("rubro: "))
   int(input("código de usuario: "))
-
-
-
-
-
-
-
-
-        
-                       
-
-
-
-
-
