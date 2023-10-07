@@ -122,8 +122,9 @@ def cargaAuxiliar():
 def registrarUsuario(tipoUsuario):
   global regUsuario
   email = input("ingrese su email")
-  contrasena = input("ingrese su contraseña")
-  if buscarUsuario (email) == -1:
+  contrasena = input("ingrese una contraseña de 8 caracteres")
+
+  if buscarUsuario (email) == -1 and contrasena.lenght() == 8:
     regUsuario.nombreUsuario = email
     regUsuario.claveUsuario = contrasena
     regUsuario.tipoUsuario = tipoUsuario
@@ -135,7 +136,8 @@ def registrarUsuario(tipoUsuario):
     print(codUser)
     regUsuario.codUsuario =codUser 
     pickle.dump(regUsuario,alUsuarios)
-
+  else:
+    print("email o contraseña inválidos, intente de nuevo")
 
   
 
@@ -195,7 +197,7 @@ def menuAdmin():
     if op == '1':
       gestionarLocales()
     elif op == '2':
-      crearCuentasDuenos()
+      registrarUsuario("duenolocal")
 
     elif op == '3':
       adSolDesc()
@@ -306,12 +308,8 @@ def menuCliente():
 
 #Funciones del Administrador----------------------------------
 
-
-def crearCuentasDuenos():
-  print("b")
-
 def adSolDesc():
-  print("c")
+
 
 def utilizacionDesc():
   print("d")
