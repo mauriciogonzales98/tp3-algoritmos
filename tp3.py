@@ -869,19 +869,24 @@ print("2) Registrarse como cliente.")
 print("3) Salir.")
 
 op = validarInput("1", "3")
+while op !='3':
+  if op == '1':
+    res = login()
+    if res != -1:
+      usuarioLogeado(res)
+    else:
+      print("La contraseña se ha ingresado incorrectamente demasiadas veces")
+      input()
 
-if op == '1':
-  res = login()
-  if res != -1:
-    usuarioLogeado(res)
-  else:
-    print("La contraseña se ha ingresado incorrectamente demasiadas veces")
-    input()
+  elif op == '2':
+    registrarUsuario("cliente")
+    
+print("Ingrese una opcion: ")
+print("1) Ingresar con usuario registrado.")
+print("2) Registrarse como cliente.")
+print("3) Salir.")
+op = validarInput("1", "3")
 
-elif op == '2':
-  registrarUsuario("cliente")
 
-else:
-  clear()
-  print("Adios!")
-  input()
+print("Adios!")
+input()
