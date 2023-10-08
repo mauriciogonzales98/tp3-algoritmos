@@ -350,11 +350,11 @@ def adSolDesc():
     posPromo = alPromociones.tell()
     regPromocion = pickle.load(alPromociones)
     
-    if regPromocion.estadoLocal == "pendiente":
-      print("Promo nro: ",regPromocion.codPromo," ", regPromocion.textoPromo,"Desde / Hasta ", regPromocion.fechaDesdeP, regPromocion.fechaHastaP)
+    if (regPromocion.estadoLocal).rstrip() == "pendiente":
+      print("Promo nro: ",(regPromocion.codPromo).rstrip()," ", regPromocion.textoPromo,"Desde / Hasta ", (regPromocion.fechaDesdeP).rstrip(), (regPromocion.fechaHastaP).rstrip())
       for i in range (7):
         print("días activa: ",regPromocion.diasSemana[i])
-      print("Local: ",regPromocion.codLocal)
+      print("Local: ",(regPromocion.codLocal).rstrip())
       
       op= input("¿(A)prueba o (D)eniega?").upper
       while op != "A" or op != "D":
@@ -363,7 +363,10 @@ def adSolDesc():
         regPromocion.estadoLocal = "aprobada"
       else:
         regPromocion.estadoLocal = "denegada"
-      
+
+      alPromociones.seek(posPromo)
+      pickle.dump(regPromocion,alPromociones)
+
       
 
 
@@ -805,14 +808,12 @@ else:
 regLocal = Locales()
 
 #Abro archivo Promociones
-
 afPromociones = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\promociones.dat"
 if not os.path.exists(afPromociones):
   alPromociones = open(afPromociones, "w+b")
 else:
   alPromociones = open(afPromociones, "r+b")
 regPromo= Promociones()
-
 
 # Abro archivo Locales
 afLocales = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\locales.dat"
