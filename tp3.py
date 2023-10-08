@@ -1,4 +1,4 @@
-#Mauricio Gonzales, Tomas Montaña, Lucio Zanella, Carlos Gabasio
+#Mauricio Gonzales, Tomás Montaña, Lucio Zanella, Carlos Gabasio
 from getpass import getpass
 from os import system, name
 import pickle
@@ -49,7 +49,6 @@ class Novedades:
     self.tipoUsuario = ""
     self.estadoLocal = "B"
 
-class Rubro():
   def __init__(self):
     self.rubro = ""
     self.cant = 0
@@ -460,17 +459,14 @@ def buscoDescuento():
   
   while codLocal != 0:
     date = fechaInicio()
+    weekday= datetime.datetime.weekday(date)
     pos = buscarCodLocal(codLocal)
     alPromociones.seek(pos)
     regPromo = pickle.load(alPromociones)
-    if ((regPromo.estadoPromo).rstrip() == "aprobada" and (regPromo.fechaDesdeP).rstrip() <= date and date <= (regPromo.fechaHastaP).rstrip() ):
-      print("a")
-
-    
-    
-
-
-
+    # Puede haber un problema en el siguiente if con la segunda condición, dependiendo de si se acepta la comparación entre today y date, porque today da la fecha hasta los segundos, y date hasta los días
+    if ((regPromo.estadoPromo).rstrip() == "aprobada" and datetime.datetime.today()<= date and (regPromo.fechaDesdeP).rstrip() <= date and date <= (regPromo.fechaHastaP).rstrip() and (regPromo.diasSemana[weekday]).rstrip() == 1 ):
+      print("código", (regPromo.codPromo).rstrip()," Promo: ", (regPromo.textoPromo).rstrip(), " Desde: ", (regPromo.fechaDesdeP).rstrip(), " Hasta: ", (regPromo.fechaHastaP).rstrip() )
+      
 
 def solicitoDescuento():
   print("l")
