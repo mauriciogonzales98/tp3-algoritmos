@@ -335,18 +335,17 @@ def menuCliente():
   print('2) Solicitar descuento')
   print('3) Ver novedades')
   print('0) Salir')
-  op = validarInput('0', '4')
+  op = validarInput('0', '3')
 
   while op != '0':
 
     if op == "1":
-      registroCliente()
-    elif op == "2":
       buscoDescuento()
-    elif op == "3":
+    elif op == "2":
       solicitoDescuento()
-    elif op == "4":
-      verNovedades()
+    elif op == "3":
+      print("diagramado en Chapín")
+
 
 #Funciones del Administrador----------------------------------
 
@@ -471,8 +470,6 @@ def buscoDescuento():
 def solicitoDescuento():
   print("l")
 
-def verNovedades():
-  print("m")
 
 def gestionarLocales():
   print("a) Crear locales")
