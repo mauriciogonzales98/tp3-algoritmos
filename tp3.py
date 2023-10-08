@@ -484,13 +484,6 @@ def solicitoDescuento():
         formatearUsoPromos(regUsoPromo)
         pickle.dump(regUsoPromo,alUsoPromos)
         
-
-        
-
-      
-  
-
-
 #busca un código de descuento y devuelve la posición de su registro
 def buscarCodDesc(cod):
   alPromociones.seek(0)
