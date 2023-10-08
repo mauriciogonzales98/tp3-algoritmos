@@ -1,4 +1,4 @@
-#Mauricio Gonzales, Tomas Montaña, Lucio Zanella, Carlos Gabasio
+#Mauricio Gonzales, Tomás Montaña, Lucio Zanella, Carlos Gabasio
 from getpass import getpass
 from os import system, name
 import pickle
@@ -49,7 +49,6 @@ class Novedades:
     self.tipoUsuario = ""
     self.estadoLocal = "B"
 
-class Rubro():
   def __init__(self):
     self.rubro = ""
     self.cant = 0
@@ -78,6 +77,10 @@ def formatearPromociones(regPromo):
   regPromo.estadoPromo = str(regPromo.estadoPromo).ljust(10)
   regPromo.codLocal = str(regPromo.codLocal).ljust(1)
 
+def formatearUsoPromos(regUsoPromo):
+  regUsoPromo.codCliente = str(regUsoPromo.codCliente).ljust(4)
+  regUsoPromo.codPromo = str(regUsoPromo.codPromo).ljust(1)
+  regUsoPromo.fechaUsoPromo = str(regUsoPromo.fechaUsoPromo).ljust(10)
 #Funciones------------------------------------------------------------------------
 
 #Funcion clear para limpiar la consola, verifica que SO se esta usando
@@ -102,7 +105,7 @@ def login():
     if pos >= 0:
       alUsuarios.seek(pos,0)
       regUsuario = pickle.load(alUsuarios)
-      if contrasena == regUsuario.claveUsuario.rstrip():
+      if contrasena == (regUsuario.claveUsuario).rstrip():
         res = pos
       else:
         clear()
@@ -181,6 +184,7 @@ def registrarUsuario(tipoUsuario):
 
 #Determina qué usuario se logueó y llama al menú correspondiente -----------------------
 def usuarioLogeado(pos):
+  global codCliente
   alUsuarios.seek(pos)
   regUsuario = pickle.load(alUsuarios)
   if (regUsuario.tipoUsuario).rstrip() == "administrador":
@@ -188,6 +192,7 @@ def usuarioLogeado(pos):
   elif (regUsuario.tipoUsuario).rstrip() == "duenolocal":
     menuDueno(pos)
   elif (regUsuario.tipoUsuario).rstrip() == "cliente":
+    codCliente = (regUsuario.codUsuario).rstrip()
     menuCliente()
 
 #Busca un usuario en el archivo de usuarios. Barrido secuencial. -----------------------
@@ -334,16 +339,18 @@ def menuCliente():
   print('2) Solicitar descuento')
   print('3) Ver novedades')
   print('0) Salir')
-  op = validarInput('0', '4')
+  op = validarInput('0', '3')
 
   while op != '0':
 
     if op == "1":
       buscoDescuento()
     elif op == "2":
+    elif op == "2":
       solicitoDescuento()
     elif op == "3":
-      verNovedades()
+      print("diagramado en Chapín")
+
 
 #Funciones del Administrador----------------------------------
 
@@ -401,7 +408,7 @@ def crearDesc(pos):
         promodesc = input()
 
         while len(promodesc) < 1 or len(promodesc) > 200:
-          print("Descripcion no valida. Ingrese nuevamente la descripcion")
+          print("Descripción no válida. Ingrese nuevamente la descripción")
           promodesc = input()
 
         fechaini = fechaInicio()
@@ -410,13 +417,13 @@ def crearDesc(pos):
         op = ' '
         dias = [0]*7
         while op != '0':
-          print("Que dias esta activa la promocion? Pulse 0 para terminar.")
+          print("Qué días está activa la promoción? Pulse 0 para terminar.")
           print("1) Lunes")
           print("2) Martes")
-          print("3) Miercoles")
+          print("3) Miércoles")
           print("4) Jueves")
           print("5) Viernes")
-          print("6) Sabado")
+          print("6) Sábado")
           print("7) Domingo")
           op = validarInput('0', '7')
           if op!='0':
@@ -446,13 +453,8 @@ def crearDesc(pos):
         pickle.dump(regPromo, alPromociones)
         alPromociones.flush()
     else:
-      print("Usted no es el dueño de este local o el codigo es incorrecto.")
+      print("Usted no es el dueño de este local o el código es incorrecto.")
 
-def adPedDesc():
-  print("h")
-
-def repUsoDesc():
-  print("i")
 
 #Funciones del Cliente
 
@@ -463,17 +465,51 @@ def buscoDescuento():
   
   while codLocal != 0:
     date = fechaInicio()
+    weekday= datetime.datetime.weekday(date)
     pos = buscarCodLocal(codLocal)
     alPromociones.seek(pos)
     regPromo = pickle.load(alPromociones)
-    if ((regPromo.estadoPromo).rstrip() == "aprobada" and (regPromo.fechaDesdeP).rstrip() <= date and date <= (regPromo.fechaHastaP).rstrip() ):
-      print("a")
+    # Puede haber un problema en el siguiente if con la segunda condición, dependiendo de si se acepta la comparación entre today y date, porque today da la fecha hasta los segundos, y date hasta los días
+    if ((regPromo.estadoPromo).rstrip() == "aprobada" and datetime.datetime.today()<= date and (regPromo.fechaDesdeP).rstrip() <= date and date <= (regPromo.fechaHastaP).rstrip() and (regPromo.diasSemana[weekday]).rstrip() == 1 ):
+      print("código", (regPromo.codPromo).rstrip()," Promo: ", (regPromo.textoPromo).rstrip(), " Desde: ", (regPromo.fechaDesdeP).rstrip(), " Hasta: ", (regPromo.fechaHastaP).rstrip() )
+      
 
 def solicitoDescuento():
-  print("l")
+  global codCliente
+  codPromo=input("ingrese el código de promoción. Ingrese 0 para salir")
+  if codPromo != 0:
+    if buscarCodDesc(codPromo) != -1:
+      alPromociones.seek(buscarCodDesc(codPromo),0)
+      regPromo = pickle.load(alPromociones)
+      if (regPromo.estadoPromo).rstrip() == "aprobada" and (regPromo.fechaDesdeP).rstrip() <= datetime.datetime.today() and datetime.datetime.today() <= (regPromo.fechaHasaP).rstrip() and (regPromo.diasSemana[datetime.datetime.today().weekday()]).rstrip() == 1:
+        alUsoPromos.seek(1)
+        #posible problema de formateo, codCliente toma valor en el procedure usuarioLogueado, a modo de atajo para obtener el código del cliente que se logueó
+        regUsoPromo.codCliente = codCliente
+        regUsoPromo.codPromo = codPromo
+        regUsoPromo.fechaUsoPromo = datetime.datetime.today()
+        formatearUsoPromos(regUsoPromo)
+        pickle.dump(regUsoPromo,alUsoPromos)
+        
 
-def verNovedades():
-  print("Diagramado en chapin.")
+        
+
+      
+  
+
+
+#busca un código de descuento y devuelve la posición de su registro
+def buscarCodDesc(cod):
+  alPromociones.seek(0)
+  b=False
+  while alPromociones< os.path.getsize(afPromociones) and not(b):
+    pos = alPromociones.tell()
+    regPromo = pickle.load(afPromociones)
+    if (regPromo.codPromo).rstrip() == cod:
+      b = True
+      return pos
+  if not(b):
+    return -1
+
 
 def gestionarLocales():
   print("a) Crear locales")
@@ -725,7 +761,7 @@ def buscarCodLocal(cod):
   while alLocales.tell()<os.path.getsize(afLocales) and not(b):
     pos = alLocales.tell()
     regLocal = pickle.load(alLocales)
-    if int(regLocal.codLocal) == cod:
+    if int((regLocal.codLocal).rstrip()) == cod:
       b = True
 
   if not(b):
@@ -870,6 +906,23 @@ if not os.path.exists(afPromociones):
 else:
   alPromociones = open(afPromociones, "r+b")
 regPromo = Promociones()
+
+# Abro archivo UsoPromos
+afUsoPromos = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\usoPromos.dat"
+if not os.path.exists(afUsoPromos):
+  alUsoPromos = open(afUsoPromos, "w+b")
+else:
+  alUsoPromos = open(afUsoPromos, "r+b")
+regUsoPromo = UsoPromos()
+
+# Abro archivo Locales
+afLocales = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\locales.dat"
+if not os.path.exists(afLocales):
+  alLocales = open(afLocales, "w+b")
+else:
+  alLocales = open(afLocales, "r+b")
+
+regLocal = Locales()
 
 global rubros
 rubros= [Rubro()]*3
