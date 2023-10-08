@@ -49,6 +49,7 @@ class Novedades:
     self.tipoUsuario = ""
     self.estadoLocal = "B"
 
+class Rubro:     
   def __init__(self):
     self.rubro = ""
     self.cant = 0
@@ -73,7 +74,7 @@ def formatearPromociones(regPromo):
   regPromo.textoPromo = regPromo.textoPromo.ljust(200)
   regPromo.fechaDesdeP = str(regPromo.fechaDesdeP).ljust(20)
   regPromo.fechaHastaP = str(regPromo.fechaHastaP).ljust(20)
-  #regPromo.diasSemana = str(regPromo.diasSemana).ljust(7)
+  regPromo.diasSemana = regPromo.diasSemana
   regPromo.estadoPromo = str(regPromo.estadoPromo).ljust(10)
   regPromo.codLocal = str(regPromo.codLocal).ljust(1)
 
@@ -132,7 +133,8 @@ def validarYN():
   while op.lower() != 'y' and op.lower() != 'n':
     print('La opcion ingresada no es valida')
     op = input()
-  return (op.lower)
+  op = op.lower()
+  return op
 
 #Cargo datos arbitrarios para testear ------------------------------------
 def cargaAuxiliar():
@@ -147,13 +149,20 @@ def cargaAuxiliar():
   pickle.dump(regUsuario, alUsuarios)
   alUsuarios.flush()
 
-  #Inicializo el array de rubros
-  rubros[0].rubro = "indumentaria"
-  rubros[0].cant = 0
-  rubros[1].rubro = "perfumeria"
-  rubros[1].cant = 0
-  rubros[2].rubro = "comida"
-  rubros[2].cant = 0
+  global rubros
+  regRubros=Rubro()
+  rubros=[[regRubros],[regRubros],[regRubros]]
+  regRubros.rubro="perfumeria"
+  regRubros.cant=0
+  rubros[0]=regRubros
+  RegRu1=Rubro()
+  RegRu1.rubro="indumentaria"
+  RegRu1.cant=0
+  rubros[1]=RegRu1
+  RegRu2=Rubro()
+  RegRu2.rubro="comida"
+  RegRu2.cant=0
+  rubros[2]=RegRu2
 
 #Funcion para registrar clientes
 def registrarUsuario(tipoUsuario):
@@ -286,34 +295,6 @@ def menuAdmin():
     print("seleccione una opción")
     op = validarInput("0","5")
 
-def gestionarLocales():
-  print("a) Crear locales")
-  print("b) Modificar local") 
-  print("c) Eliminar local")
-  print("d) Mapas de locales")
-  print("e) Volver")
-
-  op = input("opción: ")
-
-  while op != "e":
-    clear()
-    if op == "a":
-      crear_locales()
-
-    if op == "b":
-      mod_local()
-
-    if op == "c":
-      eliminar_local()
-        
-    if op == "d":
-      mapa_locales()
-
-    if op == "e":
-      clear()
-
-    op = input("opción: ")
-
 # MENU DUEÑO de LOCAL----------------------------------------
 def menuDueno(pos):
   op = ''
@@ -352,39 +333,84 @@ def menuCliente():
     elif op == "3":
       print("diagramado en Chapín")
 
-
 #Funciones del Administrador----------------------------------
-
 def adSolDesc():
   alPromociones.seek(0)
   #tamPromociones = os.path.getsize(afPromociones)
   while alPromociones.tell() < os.path.getsize(afPromociones):
     posPromo = alPromociones.tell()
+    # print("REGISTRO: ", posPromo)
     regPromo = pickle.load(alPromociones)
-    
-    if (regPromo.estadoPromo).rstrip() == "Pendiente":
-      print("Promo nro: ",(regPromo.codPromo).rstrip()," ", regPromo.textoPromo,"Desde / Hasta ", (regPromo.fechaDesdeP).rstrip(), (regPromo.fechaHastaP).rstrip())
-      # print("días activa: ")
-      # dias = [0]*7
-      # aux = (regPromo.diasSemana).rstrip('[ ]')
-      # dias = aux.split(',')
-      # for i in range(7):
-      #   print(dias[i], sep=" ", end=" ")
-      # print("Local: ", int((regPromo.codLocal)))
+    diasSemana = [""]*7
+    diasSemana[0] = "Lunes"
+    diasSemana[1] = "Martes"
+    diasSemana[2] = "Miercoles"
+    diasSemana[3] = "Jueves"
+    diasSemana[6] = "Domingo"
+    if (regPromo.estadoPromo).rstrip() == 'pendiente':
+      print("Promo nro: ",(regPromo.codPromo).rstrip()," Descripcion", (regPromo.textoPromo).rstrip()," Desde / Hasta ", (regPromo.fechaDesdeP).rstrip(),"/", (regPromo.fechaHastaP).rstrip())
+      print("Dias activa: ")
+      dias = [0]*7
+      dias = regPromo.diasSemana
+      #aux = (regPromo.diasSemana).rstrip("]")
+      c = 0
+      for i in range(len(regPromo.diasSemana)):
+        if regPromo.diasSemana[i] == '1':
+          print(diasSemana[c], end=" ")
+          c +=1
+        if regPromo.diasSemana[i] == '0':
+          c +=1
+        #print(dias[i], sep=" ", end=" ")
+      
+      posLocal = buscarCodLocal(int(regPromo.codLocal))
+      alLocales.seek(posLocal)
+      regLocal = pickle.load(alLocales)
+      print("Local : ", (regLocal.nombreLocal).rstrip())
+
+  
+  print("Ingrese el codigo de la promocion que quiere modificar o 0 para salir")
+  cod = int(input())
+  cod = buscarCodDesc(cod)
+  while cod > 0:
+    if (regPromo.estadoPromo).rstrip() == 'pendiente':
+      alPromociones.seek(0)
+      pos = alPromociones.tell()
+      regPromo = pickle.load(alPromociones)
       print("¿(A)prueba o (D)eniega?: ")
       op = input()
       while op.upper() != "A" and op.upper() != "D":
         op = input(" Ingrese A para aprobar o D para denegar: ")
       if op.upper() == "A":
-        regPromo.estadoPromo = "Aprobada"
+        regPromo.estadoPromo = "aprobada"
       else:
-        regPromo.estadoPromo = "Denegada"
+        regPromo.estadoPromo = "denegada"
+      alPromociones.seek(pos)
+      pickle.dump(regPromo, alPromociones)
+
+    # if (regPromo.estadoPromo).rstrip() == "pendiente":
+    #   print("Promo nro: ",(regPromo.codPromo).rstrip()," ", regPromo.textoPromo,"Desde / Hasta ", (regPromo.fechaDesdeP).rstrip(), (regPromo.fechaHastaP).rstrip())
+    #   # print("días activa: ")
+    #   # dias = [0]*7
+    #   # aux = (regPromo.diasSemana).rstrip('[ ]')
+    #   # dias = aux.split(',')
+    #   # for i in range(7):
+    #   #   print(dias[i], sep=" ", end=" ")
+    #   # print("Local: ", int((regPromo.codLocal)))
+    #   print("¿(A)prueba o (D)eniega?: ")
+    #   op = input()
+    #   while op.upper() != "A" and op.upper() != "D":
+    #     op = input(" Ingrese A para aprobar o D para denegar: ")
+    #   if op.upper() == "A":
+    #     regPromo.estadoPromo = "aprobada "
+    #   else:
+    #     regPromo.estadoPromo = "denegada "
 
       
-      alPromociones.seek(posPromo)
-      formatearPromociones(regPromo)
-      pickle.dump(regPromo, alPromociones)
-      alPromociones.flush()
+    #   alPromociones.seek(posPromo)
+    #   formatearPromociones(regPromo)
+    #   pickle.dump(regPromo, alPromociones)
+    #   alPromociones.flush()
+  input()
 
 def utilizacionDesc(tipoUsuario):
   global codDueno
@@ -485,7 +511,7 @@ def crearDesc(pos):
         regPromo.fechaDesdeP = fechaini
         regPromo.fechaHastaP = fechafin
         regPromo.diasSemana = dias
-        regPromo.estadoPromo = "Pendiente"
+        regPromo.estadoPromo = "pendiente"
         regPromo.codLocal = cod
         formatearPromociones(regPromo)
         alPromociones.seek(posPromo)
@@ -498,24 +524,44 @@ def crearDesc(pos):
 #Funciones del Cliente
 
 def buscoDescuento():
-  codLocal = input ("ingrese el código del local que desea consultar. Ingese '0' para salir")
+  mostrarLocales()
+  codLocal = int(input ("ingrese el código del local que desea consultar. Ingese '0' para salir. "))
   while codLocal != 0 and buscarCodLocal(codLocal) == -1:
     codLocal = input ("código de local inválido")
   
   while codLocal != 0:
     date = fechaInicio()
-    weekday= datetime.datetime.weekday(date)
+    fecha = datetime.datetime.strftime(date, '%d/%m/%Y')
+    weekday = datetime.datetime.weekday(date)
     pos = buscarCodLocal(codLocal)
     alPromociones.seek(pos)
     regPromo = pickle.load(alPromociones)
+    dias = [0]*7
+    dias = convertirDias(regPromo.diasSemana)
+    print("WEEKDAY", weekday)
+    print("ARRAY DIAS", dias)
+    input()
     # Puede haber un problema en el siguiente if con la segunda condición, dependiendo de si se acepta la comparación entre today y date, porque today da la fecha hasta los segundos, y date hasta los días
-    if ((regPromo.estadoPromo).rstrip() == "aprobada" and datetime.datetime.today()<= date and (regPromo.fechaDesdeP).rstrip() <= date and date <= (regPromo.fechaHastaP).rstrip() and (regPromo.diasSemana[weekday]).rstrip() == 1 ):
+    if ((regPromo.estadoPromo).rstrip() == "aprobada" and datetime.datetime.today()<= fecha and (regPromo.fechaDesdeP).rstrip() <= fecha and fecha <= (regPromo.fechaHastaP).rstrip() and (dias[weekday]) == 1 ):
       print("código", (regPromo.codPromo).rstrip()," Promo: ", (regPromo.textoPromo).rstrip(), " Desde: ", (regPromo.fechaDesdeP).rstrip(), " Hasta: ", (regPromo.fechaHastaP).rstrip() )
       
+def convertirDias(arraydias):
+  dias = [0]*7
+  c=0
+  for i in range(len(arraydias)):
+    if arraydias[i] == '1':
+      dias[c] = 1
+      c +=1
+    if regPromo.diasSemana[i] == '0':
+      dias[c] = 0
+      c +=1
+  return dias
 
 def solicitoDescuento():
   global codCliente
-  codPromo=input("ingrese el código de promoción. Ingrese 0 para salir")
+
+  mostrarLocales()
+  codPromo=int(input("ingrese el código de promoción. Ingrese 0 para salir"))
   if codPromo != 0:
     if buscarCodDesc(codPromo) != -1:
       alPromociones.seek(buscarCodDesc(codPromo),0)
@@ -528,15 +574,16 @@ def solicitoDescuento():
         regUsoPromo.fechaUsoPromo = datetime.datetime.today()
         formatearUsoPromos(regUsoPromo)
         pickle.dump(regUsoPromo,alUsoPromos)
+        alUsoPromos.flush()
         
 #busca un código de descuento y devuelve la posición de su registro
 def buscarCodDesc(cod):
   alPromociones.seek(0)
   b=False
-  while alPromociones< os.path.getsize(afPromociones) and not(b):
+  while alPromociones.tell() < os.path.getsize(afPromociones) and not(b):
     pos = alPromociones.tell()
-    regPromo = pickle.load(afPromociones)
-    if (regPromo.codPromo).rstrip() == cod:
+    regPromo = pickle.load(alPromociones)
+    if int((regPromo.codPromo).rstrip()) == cod:
       b = True
       return pos
   if not(b):
@@ -597,48 +644,51 @@ def crearLocal():
       mostrarLocales()
 
       nombre = checkNombreLocal()
-
-      print('Ingrese ubicacion:')
-      ubicacion = input()
-      while len(ubicacion)<1 or len(ubicacion)>50:
-        print("La ubicacion es muy larga")
+      if nombre != '0':
+        print('Ingrese ubicacion:')
         ubicacion = input()
+        while len(ubicacion)<1 or len(ubicacion)>50:
+          print("La ubicacion es muy larga")
+          ubicacion = input()
 
-      codDueno = checkCodigoDueno()
+        codDueno = checkCodigoDueno()
 
-      print('Ingrese rubro:')
-      rubro = rubroLocales()
+        print('Ingrese rubro:')
+        rubro = rubroLocales()
 
-      tmaxLocal = os.path.getsize(afLocales)
-      alLocales.seek(0)
-      if tmaxLocal != 0:
-        regLocal = pickle.load(alLocales)
-        tRegLocal = alLocales.tell()
-        codigo = tmaxLocal // tRegLocal
-        pos = codigo * tRegLocal
+        tmaxLocal = os.path.getsize(afLocales)
+        alLocales.seek(0)
+        if tmaxLocal != 0:
+          regLocal = pickle.load(alLocales)
+          tRegLocal = alLocales.tell()
+          codigo = tmaxLocal // tRegLocal
+          pos = codigo * tRegLocal
+        else:
+          codigo = 0
+          pos = 0
+        
+        regLocal = Locales()
+        regLocal.nombreLocal = nombre
+        regLocal.ubicacionLocal = ubicacion
+        regLocal.rubroLocal = rubro
+        regLocal.codUsuario = codDueno
+        regLocal.estadoLocal = 'A'
+        regLocal.codLocal = codigo + 1
+        formatearLocal(regLocal)
+        alLocales.seek(pos)
+        pickle.dump(regLocal, alLocales)
+        alLocales.flush()
+
+        print('Quiere ingresar otro local? Y/N')
+        op = validarYN()
       else:
-        codigo = 0
-        pos = 0
-      
-      regLocal = Locales()
-      regLocal.nombreLocal = nombre
-      regLocal.ubicacionLocal = ubicacion
-      regLocal.rubroLocal = rubro
-      regLocal.codUsuario = codDueno
-      regLocal.estadoLocal = 'A'
-      regLocal.codLocal = codigo + 1
-      formatearLocal(regLocal)
-      alLocales.seek(pos)
-      pickle.dump(regLocal, alLocales)
-
-      print('Quiere ingresar otro local? Y/N')
-      op = validarYN()
-
-      ordenarLocales()
+        op = 'n'
     # actualizarMapa()
-    # mostrarRubros()
   else:
     print("No existen dueños de locales registrados, debe registrar al menos 1.")
+
+  ordenarLocales()
+  mostrarRubros()
 
 def modificarLocal():
   clear()
@@ -667,6 +717,8 @@ def modificarLocal():
     if regLocal.estadoLocal == 'A':
       print("Quiere modificar el nombre? Y/N")
       op = validarYN()
+      print("LA OPCION QUE SE INGRESO ES: ", op)
+      input()
       if op == 'y':
         nombre = checkNombreLocal()
         regLocal.nombreLocal = nombre
@@ -686,6 +738,7 @@ def modificarLocal():
       if op == 'y':
         regLocal.rubroLocal = rubroLocales()
         calcularRubros()
+        #ordenarRubros()
 
 
   
@@ -697,6 +750,8 @@ def modificarLocal():
         regLocal.codUsuario = codDueno
 
       formatearLocal(regLocal)
+      alLocales.seek(res)
+      pickle.dump(regLocal, alLocales)
     else:
       print('No se puede modificar los datos de un local inactivo')
 
@@ -719,24 +774,57 @@ def eliminarLocal():
         if op == 'y':
           regLocal.estadoLocal = 'B'
           calcularRubros()
+          ordenarRubros()
+          formatearLocal(regLocal)
+          alLocales.seek(res)
+          pickle.dump(regLocal, alLocales)
           
 def calcularRubros():
+  global rubros
   alLocales.seek(0)
   tmLocales = os.path.getsize(afLocales)
-  rubros[0].cant = 0
-  rubros[1].cant = 0
-  rubros[2].cant = 0
+  for i in range(3):
+    regRubro = rubros[i]
+    regRubro.cant = 0
+    rubros[i] = regRubro
   while alLocales.tell() < tmLocales:
     regLocal = pickle.load(alLocales)
-    if (regLocal.rubroLocal).rstrip() == "indumentaria" and (regLocal.estadoLocal).rstrip == 'A':
-      rubros[0].cant += 1
-    if (regLocal.rubroLocal).rstrip() == "perfumeria" and (regLocal.estadoLocal).rstrip == 'A':
-      rubros[1].cant += 1
-    if (regLocal.rubroLocal).rstrip() == "comida" and (regLocal.estadoLocal).rstrip == 'A':
-      rubros[2].cant += 1
+    if (regLocal.estadoLocal).rstrip() == 'A':
+      for i in range(3):
+        regRubro = rubros[i]
+        if regRubro.rubro == (regLocal.rubroLocal).rstrip():
+          regRubro.cant += 1
+          rubros[i] = regRubro
+    # if (regLocal.rubroLocal).rstrip() == "indumentaria" and (regLocal.estadoLocal).rstrip == 'A':
+    #   rubros[0].cant += 1
+    # if (regLocal.rubroLocal).rstrip() == "perfumeria" and (regLocal.estadoLocal).rstrip == 'A':
+    #   rubros[1].cant += 1
+    # if (regLocal.rubroLocal).rstrip() == "comida" and (regLocal.estadoLocal).rstrip == 'A':
+    #   rubros[2].cant += 1
+
+def mostrarRubros():
+  calcularRubros()
+  ordenarRubros()
+  global rubros
+  
+  print(rubros[0].rubro,": ", rubros[0].cant, sep="", end="\n")
+  print(rubros[1].rubro,": ", rubros[1].cant, sep="", end="\n")
+  print(rubros[2].rubro,": ", rubros[2].cant, sep="", end="\n")
+  
+  input()
+
+def ordenarRubros():
+  global rubros
+  for i in range(0, 2):
+    for j in range (i+1, 3):
+      if rubros[i].cant < rubros[j].cant:
+        aux = Rubro()
+        aux = rubros[i]
+        rubros[i] = rubros[j]
+        rubros[j] = aux
 
 def checkNombreLocal():
-  print("Ingrese el nombre del local a crear")
+  print("Ingrese el nombre del local a crear o 0 para salir")
   local = input()
   res = buscarLocal(local)
   while (len(local) < 1 or len(local)>50) and res != -1: 
@@ -745,15 +833,31 @@ def checkNombreLocal():
     res = buscarLocal(local)
   return local
 
+
+#ESTO ES DICOTOMICA D:
 def buscarLocal(nombre):
-  b = False
+
   alLocales.seek(0)
+  regLocal = pickle.load(alLocales)
+  tLocal = alLocales.tell()
   tmLocales = os.path.getsize(afLocales)
-  while (alLocales.tell() < tmLocales) and not(b):
+  cantLocales = tmLocales // tLocal
+  alLocales.seek(0)
+
+  inicio = 0
+  fin = cantLocales
+  b = False
+  while inicio <= fin and not(b):
+    mid = (inicio + fin)//2
+    alLocales.seek(mid*tLocal)
     pos = alLocales.tell()
     regLocal = pickle.load(alLocales)
-    if (nombre == (regLocal.nombreLocal).rstrip()):
+    if regLocal.nombreLocal == nombre:
       b = True
+    elif nombre < regLocal.nombreLocal:
+      fin = mid - 1
+    else:
+      inicio = mid + 1
 
   if not(b):
     pos = -1
@@ -898,8 +1002,6 @@ def hayDuenos():
     regUsuario = pickle.load(alUsuarios)
     if (regUsuario.tipoUsuario).rstrip() == 'duenolocal':
       b = True
-  print("HAY DUEÑOS", b)
-  input()
   return b
 
 def ordenarLocales():
@@ -928,7 +1030,7 @@ def mapaLocales():
 # Apertura de archivos --------------------------------------------------------
 
 #abro archivo usuario
-afUsuarios = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\usuarios.dat"
+afUsuarios = "C:\\TP3\\tp3-algoritmos\\usuarios.dat"
 if not os.path.exists(afUsuarios):
   alUsuarios = open(afUsuarios, "w+b")
 else:
@@ -936,7 +1038,7 @@ else:
 regUsuario = Usuarios()
 
 #abro archivo locales
-afLocales = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\locales.dat"
+afLocales = "C:\\TP3\\tp3-algoritmos\\locales.dat"
 if not os.path.exists(afLocales):
   alLocales = open(afLocales, "w+b")
 else:
@@ -944,7 +1046,7 @@ else:
 regLocal = Locales()
 
 #Abro archivo Promociones
-afPromociones = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\promociones.dat"
+afPromociones = "C:\\TP3\\tp3-algoritmos\\promociones.dat"
 if not os.path.exists(afPromociones):
   alPromociones = open(afPromociones, "w+b")
 else:
@@ -952,7 +1054,7 @@ else:
 regPromo = Promociones()
 
 # Abro archivo UsoPromos
-afUsoPromos = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\usoPromos.dat"
+afUsoPromos = "C:\\TP3\\tp3-algoritmos\\usoPromos.dat"
 if not os.path.exists(afUsoPromos):
   alUsoPromos = open(afUsoPromos, "w+b")
 else:
@@ -960,7 +1062,7 @@ else:
 regUsoPromo = UsoPromos()
 
 # Abro archivo Locales
-afLocales = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\locales.dat"
+afLocales = "C:\\TP3\\tp3-algoritmos\\locales.dat"
 if not os.path.exists(afLocales):
   alLocales = open(afLocales, "w+b")
 else:
