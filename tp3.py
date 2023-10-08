@@ -373,7 +373,7 @@ def adSolDesc():
         regPromo.estadoPromo = "denegada"
 
       alPromociones.seek(posPromo)
-      pickle.dump(regPromocion,alPromociones)
+      pickle.dump(regPromo,alPromociones)
 
 def utilizacionDesc():
   print("d")
@@ -463,7 +463,13 @@ def buscoDescuento():
     pos = buscarCodLocal(codLocal)
     alPromociones.seek(pos)
     regPromo = pickle.load(alPromociones)
-    #if (regPromo.)
+    if ((regPromo.estadoPromo).rstrip() == "aprobada" and (regPromo.fechaDesdeP).rstrip() <= date and date <= (regPromo.fechaHastaP).rstrip() ):
+      print("a")
+
+    
+    
+
+
 
 
 def solicitoDescuento():
