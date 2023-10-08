@@ -949,7 +949,7 @@ def mapaLocales():
 # Apertura de archivos --------------------------------------------------------
 
 #abro archivo usuario
-afUsuarios = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\usuarios.dat"
+afUsuarios = "C:\\TP3\\tp3-algoritmos\\usuarios.dat"
 if not os.path.exists(afUsuarios):
   alUsuarios = open(afUsuarios, "w+b")
 else:
@@ -957,7 +957,7 @@ else:
 regUsuario = Usuarios()
 
 #abro archivo locales
-afLocales = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\locales.dat"
+afLocales = "C:\\TP3\\tp3-algoritmos\\locales.dat"
 if not os.path.exists(afLocales):
   alLocales = open(afLocales, "w+b")
 else:
@@ -965,7 +965,7 @@ else:
 regLocal = Locales()
 
 #Abro archivo Promociones
-afPromociones = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\promociones.dat"
+afPromociones = "C:\\TP3\\tp3-algoritmos\\promociones.dat"
 if not os.path.exists(afPromociones):
   alPromociones = open(afPromociones, "w+b")
 else:
@@ -973,7 +973,7 @@ else:
 regPromo = Promociones()
 
 # Abro archivo UsoPromos
-afUsoPromos = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\usoPromos.dat"
+afUsoPromos = "C:\\TP3\\tp3-algoritmos\\usoPromos.dat"
 if not os.path.exists(afUsoPromos):
   alUsoPromos = open(afUsoPromos, "w+b")
 else:
@@ -981,7 +981,7 @@ else:
 regUsoPromo = UsoPromos()
 
 # Abro archivo Locales
-afLocales = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\locales.dat"
+afLocales = "C:\\TP3\\tp3-algoritmos\\locales.dat"
 if not os.path.exists(afLocales):
   alLocales = open(afLocales, "w+b")
 else:
