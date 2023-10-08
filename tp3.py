@@ -135,7 +135,7 @@ def validarYN():
 def cargaAuxiliar():
   #adm
   global alUsuarios
-  regUsuario.codUsuario = 0
+  regUsuario.codUsuario = 1
   regUsuario.nombreUsuario = "admin@shopping.com"
   regUsuario.claveUsuario = "12345"
   regUsuario.tipoUsuario = "administrador"
@@ -165,8 +165,7 @@ def registrarUsuario(tipoUsuario):
     regUsuario = pickle.load(alUsuarios)
     tamregUsuario = alUsuarios.tell()
     codUser = tamUsuarios//tamregUsuario
-    print(codUser)
-    regUsuario.codUsuario = codUser
+    regUsuario.codUsuario = codUser + 1
     regUsuario.nombreUsuario = email
     regUsuario.claveUsuario = contrasena
     regUsuario.tipoUsuario = tipoUsuario
@@ -449,7 +448,7 @@ def crearDesc(pos):
           codigo = 0
 
         regPromo = Promociones()
-        regPromo.codPromo = codigo
+        regPromo.codPromo = codigo + 1
         regPromo.textoPromo = promodesc
         regPromo.fechaDesdeP = fechaini
         regPromo.fechaHastaP = fechafin
@@ -557,7 +556,7 @@ def crearLocal():
     regLocal.rubroLocal = rubro
     regLocal.codUsuario = codDueno
     regLocal.estadoLocal = 'A'
-    regLocal.codLocal = codigo
+    regLocal.codLocal = codigo + 1
     formatearLocal(regLocal)
     alLocales.seek(2)
     pickle.dump(regLocal, alLocales)
@@ -814,14 +813,6 @@ if not os.path.exists(afPromociones):
 else:
   alPromociones = open(afPromociones, "r+b")
 regPromo= Promociones()
-
-# Abro archivo Locales
-afLocales = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\locales.dat"
-if not os.path.exists(afLocales):
-  alLocales = open(afLocales, "w+b")
-else:
-  alLocales = open(afLocales, "r+b")
-regLocal = Locales()
 
 global rubros 
 rubros= [Rubro()]*3
