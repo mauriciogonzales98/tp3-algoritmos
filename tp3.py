@@ -487,6 +487,9 @@ def buscoDescuento():
     date = fechaInicio()
     pos = buscarCodLocal(codLocal)
     alPromociones.seek(pos)
+    regPromo = pickle.load(alPromociones)
+    if (regPromo.)
+
     
     
 
