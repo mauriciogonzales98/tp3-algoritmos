@@ -396,7 +396,7 @@ def crearDesc(pos):
         promodesc = input()
 
         while len(promodesc) < 1 or len(promodesc) > 200:
-          print("Descripcion no valida. Ingrese nuevamente la descripcion")
+          print("Descripción no válida. Ingrese nuevamente la descripción")
           promodesc = input()
 
         fechaini = fechaInicio()
@@ -405,13 +405,13 @@ def crearDesc(pos):
         op = ' '
         dias = [0]*7
         while op != '0':
-          print("Que dias esta activa la promocion? Pulse 0 para terminar.")
+          print("Qué días está activa la promoción? Pulse 0 para terminar.")
           print("1) Lunes")
           print("2) Martes")
-          print("3) Miercoles")
+          print("3) Miércoles")
           print("4) Jueves")
           print("5) Viernes")
-          print("6) Sabado")
+          print("6) Sábado")
           print("7) Domingo")
           op = validarInput('0', '7')
           dias[int(op)-1] = 1
@@ -434,14 +434,14 @@ def crearDesc(pos):
         regPromo.fechaDesdeP = fechaini
         regPromo.fechaHastaP = fechafin
         regPromo.diasSemana = str(regPromo.diasSemana).ljust(7)
-        regPromo.estadoPromo = "Pendiente"
+        regPromo.estadoPromo = "pendiente"
         regPromo.codLocal = cod
         formatearPromociones(regPromo)
         alPromociones.seek(posPromo)
         pickle.dump(regPromo, alPromociones)
         #falta guardar los datos en el registro, la funcion de formateo y dumpearlo
     else:
-      print("Usted no es el dueño de este local o el codigo es incorrecto.")
+      print("Usted no es el dueño de este local o el código es incorrecto.")
 
 def adPedDesc():
   print("h")
@@ -468,7 +468,7 @@ def buscoDescuento():
       
 
 def solicitoDescuento():
-  print("l")
+  codPromo=input("ingrese el código de promoción")
 
 
 def gestionarLocales():
@@ -721,7 +721,7 @@ def buscarCodLocal(cod):
   while alLocales.tell()<os.path.getsize(afLocales) and not(b):
     pos = alLocales.tell()
     regLocal = pickle.load(alLocales)
-    if int(regLocal.codLocal) == cod:
+    if int((regLocal.codLocal).rstrip()) == cod:
       b = True
 
   if not(b):
