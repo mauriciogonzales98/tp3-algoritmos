@@ -89,8 +89,6 @@ def login():
     print('Ingrese contraseña:')
     contrasena = getpass()
     pos = buscarUsuario(usuario)
-    print("LA POSICION ES:", pos)
-    input()
     if pos >= 0:
       alUsuarios.seek(pos,0)
       regUsuario = pickle.load(alUsuarios)
@@ -332,12 +330,11 @@ def menuCliente():
 #Funciones del Administrador----------------------------------
 
 def adSolDesc():
-  global reg
   alPromociones.seek(0)
   tamPromociones = os.path.getsize(afPromociones)
   while alPromociones < tamPromociones:
 
-  regPromocion = pickle.load(alPromociones)
+    regPromocion = pickle.load(alPromociones)
 
 
 def utilizacionDesc():
@@ -463,7 +460,7 @@ def modificarLocal():
     cod = int(input())
     res = buscarCodLocal(cod)
     while res < 0:
-      print("El codigo no existe, ingrese otro codigo:")
+      print("El codigo no existe, ingrese otro:")
       cod = int(input())
       res = buscarCodLocal(cod)
 
@@ -512,6 +509,27 @@ def modificarLocal():
     else:
       print('No se puede modificar los datos de un local inactivo')
 
+def eliminarLocal():
+  clear()
+  if os.path.getsize(afLocales)<=0:
+    print('No hay locales cargados')
+    input('Presione ENTER')
+  else:
+    mostrarLocales()
+    print("Ingrese el codigo del local que desea eliminar o -1 para salir:")
+    cod = int(input())
+    res = buscarCodLocal(cod)
+    if res != -1 and cod != -1:
+      alLocales.seek(res)
+      regLocal = pickle.load(alLocales)
+      if regLocal.estadoLocal == 'A':
+        print("Deasea eliminar el local? Y/N")
+        op = validarYN()
+        if op == 'y':
+          regLocal.estadoLocal = 'B'
+          calcularRubros()
+          
+
 def calcularRubros():
   alLocales.seek(0)
   tmLocales = os.path.getsize(afLocales)
@@ -520,11 +538,11 @@ def calcularRubros():
   rubros[2].cant = 0
   while alLocales.tell() < tmLocales:
     regLocal = pickle.load(alLocales)
-    if (regLocal.rubroLocal).rstrip() == "indumentaria":
+    if (regLocal.rubroLocal).rstrip() == "indumentaria" and (regLocal.estadoLocal).rstrip == 'A':
       rubros[0].cant += 1
-    elif (regLocal.rubroLocal).rstrip() == "perfumeria":
+    if (regLocal.rubroLocal).rstrip() == "perfumeria" and (regLocal.estadoLocal).rstrip == 'A':
       rubros[1].cant += 1
-    else:
+    if (regLocal.rubroLocal).rstrip() == "comida" and (regLocal.estadoLocal).rstrip == 'A':
       rubros[2].cant += 1
 
 def checkNombreLocal():
