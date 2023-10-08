@@ -691,6 +691,16 @@ else:
   alPromociones = open(afPromociones, "r+b")
 regPromocion = Promociones()
 
+
+# Abro archivo Locales
+afLocales = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\locales.dat"
+if not os.path.exists(afLocales):
+  alLocales = open(afLocales, "w+b")
+else:
+  alLocales = open(afLocales, "r+b")
+
+regLocal = Locales()
+
 global rubros 
 rubros= [Rubro()]*3
 cargaAuxiliar()
