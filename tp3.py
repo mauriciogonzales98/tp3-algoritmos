@@ -228,19 +228,16 @@ def menuAdmin():
       gestionarLocales()
     elif op == '2':
       registrarUsuario("duenolocal")
-
     elif op == '3':
       adSolDesc()
-
     elif op == "4":
       print("codificado en chapín")
     elif op == '5':
       utilizacionDesc()
 
     else:
-      print("ok")
       clear()
-      print('Adios!')
+      input('Adios!')
 
     clear()
     print("ADMINISTRADOR")
@@ -253,7 +250,6 @@ def menuAdmin():
     print("0)Salir")
     print("seleccione una opción")
     op = validarInput("0","5")
-
 
 def gestionarLocales():
   print("a) Crear locales")
@@ -289,43 +285,26 @@ def menuDueno(pos):
   while op != '0':
     clear()
     print("Elija una opcion:")
-    print("1)Gestión de Descuentos")
-    print("2)Aceptar / Rechazar pedido de descuento")
-    print("3)Reporte de uso de descuentos")
+    print("1)Crear descuento")
+    print("2)Reporte de uso de descuentos")
+    print("3)Ver novedades")
     print("0)Salir")
     
     op = validarInput('0', '3')
   
     if op == '1':
-    #Submenu
-      op = ' '
-      while op != 'd':
-        clear()
-        print("Elija una opcion:")
-        print("1)Gestión de Descuentos")
-        print('    a)Crear descuento para mi local')
-        print('    b)Modificar descuento de mi local')
-        print('    c)Eliminar descuento de mi local')
-        print('    d)Volver')
-        op = validarInput('a', 'd')
-        if op == "a":
-          crearDesc(pos)
-        elif op == "b":
-          modDesc()
-        elif op == "c":
-          elimDesc()
+      crearDesc(pos)
     elif op == "2":
-      adPedDesc()
-    else:
       repUsoDesc()
+    else:
+      input("Diagramado en chapin")
 
 # MENU CLIENTE-----------------------------------------------
 def menuCliente():
   clear()
-  print('1) Registrarme')
-  print('2) Buscar descuentos en locales')
-  print('3) Solicitar descuento')
-  print('4) Ver novedades')
+  print('1) Buscar descuentos en locales')
+  print('2) Solicitar descuento')
+  print('3) Ver novedades')
   print('0) Salir')
   op = validarInput('0', '4')
 
@@ -366,16 +345,12 @@ def adSolDesc():
       alPromociones.seek(posPromo)
       pickle.dump(regPromocion,alPromociones)
 
-      
-
-
 def utilizacionDesc():
   print("d")
 
-
 # Funciones del Dueño de Local
 def crearDesc(pos):
-  mostrarDescuentos(pos)
+  mostrarPromociones(pos)
   alUsuarios.seek(pos)
   regUsuario = pickle.load(alUsuarios)
 
@@ -462,12 +437,6 @@ def crearDesc(pos):
     else:
       print("Usted no es el dueño de este local o el codigo es incorrecto.")
       input()
-
-def modDesc():
- print("f")
-
-def elimDesc():
-  print("g")
 
 def adPedDesc():
   print("h")
@@ -784,7 +753,7 @@ def rubroLocales():
   #actualizarRubros(r, id)
   return r
 
-def mostrarDescuentos(pos):
+def mostrarPromociones(pos):
   print("a\n")
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#- Programa principal -#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
