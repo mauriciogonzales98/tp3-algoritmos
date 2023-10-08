@@ -176,7 +176,7 @@ def usuarioLogeado(pos):
   if (regUsuario.tipoUsuario).rstrip() == "administrador":
     menuAdmin()
   elif(regUsuario.tipoUsuario).rstrip() == "duenolocal":
-    menuDueno()
+    menuDueno(pos)
   elif (regUsuario.tipoUsuario).rstrip() == "cliente":
     menuCliente()
 
@@ -274,7 +274,7 @@ def gestionarLocales():
     op = input("opción: ")
 
 # MENU DUEÑO de LOCAL----------------------------------------
-def menuDueno():
+def menuDueno(pos):
   op = ''
   while op != '0':
     clear()
@@ -288,23 +288,26 @@ def menuDueno():
   
     if op == '1':
     #Submenu
+      op = ' '
       while op != 'd':
         clear()
         print("Elija una opcion:")
         print("1)Gestión de Descuentos")
-        print('    a)Crear descuento para mi local\n',
-              '    b)Modificar descuento de mi local')
+        print('    a)Crear descuento para mi local\n')
+        print('    b)Modificar descuento de mi local')
         print('    c)Eliminar descuento de mi local\n')
+        op = validarInput('a', 'd')
         if op == "a":
-          crearDesc()
+          crearDesc(pos)
         elif op == "b":
           modDesc()
         elif op == "c":
           elimDesc()
-        elif op == "2":
-          adPedDesc()
-        elif op == "3":
-          repUsoDesc()
+        op = validarInput('a', 'd')
+    elif op == "2":
+      adPedDesc()
+    else:
+      repUsoDesc()
 
 # MENU CLIENTE-----------------------------------------------
 def menuCliente():
@@ -342,8 +345,49 @@ def utilizacionDesc():
 
 
 # Funciones del Dueño de Local
-def crearDesc():
-  print("e")
+def crearDesc(pos):
+  mostrarDescuentos(pos)
+  alUsuarios.seek(pos)
+  regUsuario = pickle.load(alUsuarios)
+
+  print("Ingrese el codigo de su local o -1 para salir")
+  cod = int(input())
+  if cod != -1:
+    posLocal = buscarCodLocal(cod)
+    alLocales.seek(posLocal)
+    regLocal = pickle.load(alLocales)
+    if regLocal.codUsuario == regUsuario.codUsuario:
+
+      print("Ingrese la descripcion de la promocion: ")
+      promodesc = input()
+
+      while len(promodesc) < 1 or len(promodesc) > 200:
+        print("Descripcion no valida. Ingrese nuevamente la descripcion")
+        promodesc = input()
+
+      print("Ingrese la fecha de comienzo de la promocion en formato DD/MM/AAAA. No puede ser anterior a la fecha de hoy.")
+      bandera = True
+      while bandera: 
+        fechaini = input()
+        datetime.datetime.strptime(fechaini, '%d/%m/%Y')
+        hoy = datetime.datetime.today()
+        if fechaini >= hoy.strptime(hoy, '%d/%m/%Y'):
+          bandera = False
+        else:
+          print("La fecha no es valida. Intentelo nuevamente")
+
+      print("Ingrese la fecha de finalizacion de la promocion en formato DD/MM/AAAA. Debe ser posterior a la fecha de inicio.")
+      bandera = True
+      while bandera:
+        fechafin = input()
+        datetime.datetime.strptime(fechafin, '%d/%m/%Y')
+        if fechafin > fechaini:
+          bandera = False
+        else:
+          print("La fecha no es valida. Intentelo nuevamente")
+      #falta guardar los datos en el registro, la funcion de formateo y dumpearlo
+    else:
+      print("Usted no es el dueño de este local o el codigo es incorrecto.")
 
 def modDesc():
  print("f")
@@ -662,6 +706,9 @@ def rubroLocales():
     r = "comida"
   #actualizarRubros(r, id)
   return r
+
+def mostrarDescuentos(pos):
+  print("a\n")
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#- Programa principal -#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 # Apertura de archivos --------------------------------------------------------
