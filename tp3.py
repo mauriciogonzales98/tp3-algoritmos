@@ -72,10 +72,10 @@ def formatearLocal(regLocal):
 def formatearPromociones(regPromo):
   regPromo.codPromo = str(regPromo.codPromo).ljust(1)
   regPromo.textoPromo = regPromo.textoPromo.ljust(200)
-  regPromo.fechaDesdeP = str(regPromo.fechaDesdeP).ljust(10)
-  regPromo.fechaHastaP = str(regPromo.fechaHastaP).ljust(10)
-  regPromo.diasSemana = str(regPromo.diasSemana).ljust(7)
-  regPromo.estadoPromo = regPromo.estadoPromo.ljust(10)
+  regPromo.fechaDesdeP = str(regPromo.fechaDesdeP).ljust(20)
+  regPromo.fechaHastaP = str(regPromo.fechaHastaP).ljust(20)
+  #regPromo.diasSemana = str(regPromo.diasSemana).ljust(7)
+  regPromo.estadoPromo = str(regPromo.estadoPromo).ljust(10)
   regPromo.codLocal = str(regPromo.codLocal).ljust(1)
 
 #Funciones------------------------------------------------------------------------
@@ -135,7 +135,7 @@ def validarYN():
 def cargaAuxiliar():
   #adm
   global alUsuarios
-  regUsuario.codUsuario = 0
+  regUsuario.codUsuario = 1
   regUsuario.nombreUsuario = "admin@shopping.com"
   regUsuario.claveUsuario = "12345"
   regUsuario.tipoUsuario = "administrador"
@@ -156,7 +156,7 @@ def cargaAuxiliar():
 def registrarUsuario(tipoUsuario):
   #global regUsuario
   email = input("ingrese su email: ")
-  print("ingrese una contraseña de hasta 8 caracteres: ")
+  print("ingrese una contraseña de 8 caracteres: ")
   contrasena = getpass()
 
   if buscarUsuario(email) == -1 and len(contrasena) == 8:
@@ -165,8 +165,7 @@ def registrarUsuario(tipoUsuario):
     regUsuario = pickle.load(alUsuarios)
     tamregUsuario = alUsuarios.tell()
     codUser = tamUsuarios//tamregUsuario
-    print(codUser)
-    regUsuario.codUsuario = codUser
+    regUsuario.codUsuario = codUser + 1
     regUsuario.nombreUsuario = email
     regUsuario.claveUsuario = contrasena
     regUsuario.tipoUsuario = tipoUsuario
@@ -264,7 +263,6 @@ def menuAdmin():
       print("codificado en chapín")
     elif op == '5':
       utilizacionDesc()
-
     else:
       clear()
       input('Adios!')
@@ -324,9 +322,9 @@ def menuDueno(pos):
   
     if op == '1':
       crearDesc(pos)
-    elif op == "2":
+    elif op == '2':
       repUsoDesc()
-    else:
+    elif op == '3':
       input("Diagramado en chapin")
 
 # MENU CLIENTE-----------------------------------------------
@@ -341,39 +339,44 @@ def menuCliente():
   while op != '0':
 
     if op == "1":
-      registroCliente()
-    elif op == "2":
       buscoDescuento()
-    elif op == "3":
+    elif op == "2":
       solicitoDescuento()
-    elif op == "4":
+    elif op == "3":
       verNovedades()
 
 #Funciones del Administrador----------------------------------
 
 def adSolDesc():
   alPromociones.seek(0)
-  tamPromociones = os.path.getsize(afPromociones)
-  while alPromociones < tamPromociones:
+  #tamPromociones = os.path.getsize(afPromociones)
+  while alPromociones.tell() < os.path.getsize(afPromociones):
     posPromo = alPromociones.tell()
     regPromo = pickle.load(alPromociones)
     
-    if (regPromo.estadoPromo).rstrip() == "pendiente":
+    if (regPromo.estadoPromo).rstrip() == "Pendiente":
       print("Promo nro: ",(regPromo.codPromo).rstrip()," ", regPromo.textoPromo,"Desde / Hasta ", (regPromo.fechaDesdeP).rstrip(), (regPromo.fechaHastaP).rstrip())
-      for i in range (7):
-        print("días activa: ",regPromo.diasSemana[i])
-      print("Local: ",(regPromo.codLocal).rstrip())
-      
-      op= input("¿(A)prueba o (D)eniega?").upper
-      while op != "A" or op != "D":
-        op = input(" Ingrese A para aprobar o D para denegar")
-      if op == "A":
-        regPromo.estadoPromo = "aprobada"
+      # print("días activa: ")
+      # dias = [0]*7
+      # aux = (regPromo.diasSemana).rstrip('[ ]')
+      # dias = aux.split(',')
+      # for i in range(7):
+      #   print(dias[i], sep=" ", end=" ")
+      # print("Local: ", int((regPromo.codLocal)))
+      print("¿(A)prueba o (D)eniega?: ")
+      op = input()
+      while op.upper() != "A" and op.upper() != "D":
+        op = input(" Ingrese A para aprobar o D para denegar: ")
+      if op.upper() == "A":
+        regPromo.estadoPromo = "Aprobada"
       else:
-        regPromo.estadoPromo = "denegada"
+        regPromo.estadoPromo = "Denegada"
 
+      
       alPromociones.seek(posPromo)
-      pickle.dump(regPromo,alPromociones)
+      formatearPromociones(regPromo)
+      pickle.dump(regPromo, alPromociones)
+      alPromociones.flush()
 
 def utilizacionDesc():
   print("d")
@@ -416,8 +419,8 @@ def crearDesc(pos):
           print("6) Sabado")
           print("7) Domingo")
           op = validarInput('0', '7')
-          dias[int(op)-1] = 1
-
+          if op!='0':
+            dias[int(op)-1] = 1
 
         tmaxPromo = os.path.getsize(afPromociones)
         alPromociones.seek(0)
@@ -431,17 +434,17 @@ def crearDesc(pos):
           posPromo = 0
 
         regPromo = Promociones()
-        regPromo.codPromo = codigo
+        regPromo.codPromo = codigo + 1
         regPromo.textoPromo = promodesc
         regPromo.fechaDesdeP = fechaini
         regPromo.fechaHastaP = fechafin
-        regPromo.diasSemana = str(regPromo.diasSemana).ljust(7)
+        regPromo.diasSemana = dias
         regPromo.estadoPromo = "Pendiente"
         regPromo.codLocal = cod
         formatearPromociones(regPromo)
         alPromociones.seek(posPromo)
         pickle.dump(regPromo, alPromociones)
-        #falta guardar los datos en el registro, la funcion de formateo y dumpearlo
+        alPromociones.flush()
     else:
       print("Usted no es el dueño de este local o el codigo es incorrecto.")
 
@@ -466,17 +469,11 @@ def buscoDescuento():
     if ((regPromo.estadoPromo).rstrip() == "aprobada" and (regPromo.fechaDesdeP).rstrip() <= date and date <= (regPromo.fechaHastaP).rstrip() ):
       print("a")
 
-    
-    
-
-
-
-
 def solicitoDescuento():
   print("l")
 
 def verNovedades():
-  print("m")
+  print("Diagramado en chapin.")
 
 def gestionarLocales():
   print("a) Crear locales")
@@ -557,6 +554,7 @@ def crearLocal():
       print('Quiere ingresar otro local? Y/N')
       op = validarYN()
 
+      ordenarLocales()
     # actualizarMapa()
     # mostrarRubros()
   else:
@@ -720,7 +718,6 @@ def buscarCodUsuario(cod):
 
   return pos
 
-#Esto hay que cambiar a barrido secuencial porque hay que ordenarlos por nombre
 def buscarCodLocal(cod):
   alLocales.seek(0)
 
@@ -824,6 +821,28 @@ def hayDuenos():
   print("HAY DUEÑOS", b)
   input()
   return b
+
+def ordenarLocales():
+  alLocales.seek(0)
+  aux = pickle.load(alLocales) #para con el tell saber cuanto pesa un registro
+  tamReg = alLocales.tell() 
+  tamArch = os.path.getsize(afLocales)
+  cantReg = int(tamArch / tamReg)  
+  for i in range(0, cantReg-1):
+    for j in range (i+1, cantReg):
+      alLocales.seek (i*tamReg, 0)
+      auxi = pickle.load(alLocales)
+      alLocales.seek (j*tamReg, 0)
+      auxj = pickle.load(alLocales)
+      if (auxi.nombreLocal > auxj.nombreLocal):
+          alLocales.seek (i*tamReg, 0)
+          pickle.dump(auxj, alLocales)
+          alLocales.seek (j*tamReg, 0)
+          pickle.dump(auxi,alLocales)
+          alLocales.flush()
+
+def mapaLocales():
+  print("proximamente xd")
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#- Programa principal -#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 # Apertura de archivos --------------------------------------------------------
@@ -852,16 +871,7 @@ else:
   alPromociones = open(afPromociones, "r+b")
 regPromo = Promociones()
 
-# Abro archivo Locales
-afLocales = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\locales.dat"
-if not os.path.exists(afLocales):
-  alLocales = open(afLocales, "w+b")
-else:
-  alLocales = open(afLocales, "r+b")
-
-regLocal = Locales()
-
-global rubros 
+global rubros
 rubros= [Rubro()]*3
 cargaAuxiliar()
 calcularRubros()
@@ -884,12 +894,12 @@ while op !='3':
 
   elif op == '2':
     registrarUsuario("cliente")
-    
-print("Ingrese una opcion: ")
-print("1) Ingresar con usuario registrado.")
-print("2) Registrarse como cliente.")
-print("3) Salir.")
-op = validarInput("1", "3")
+
+  print("Ingrese una opcion: ")
+  print("1) Ingresar con usuario registrado.")
+  print("2) Registrarse como cliente.")
+  print("3) Salir.")
+  op = validarInput("1", "3")
 
 
 print("Adios!")
