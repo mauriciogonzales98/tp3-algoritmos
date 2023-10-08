@@ -49,6 +49,7 @@ class Novedades:
     self.tipoUsuario = ""
     self.estadoLocal = "B"
 
+class Rubro():     
   def __init__(self):
     self.rubro = ""
     self.cant = 0
@@ -73,7 +74,7 @@ def formatearPromociones(regPromo):
   regPromo.textoPromo = regPromo.textoPromo.ljust(200)
   regPromo.fechaDesdeP = str(regPromo.fechaDesdeP).ljust(20)
   regPromo.fechaHastaP = str(regPromo.fechaHastaP).ljust(20)
-  #regPromo.diasSemana = str(regPromo.diasSemana).ljust(7)
+  regPromo.diasSemana = regPromo.diasSemana
   regPromo.estadoPromo = str(regPromo.estadoPromo).ljust(10)
   regPromo.codLocal = str(regPromo.codLocal).ljust(1)
 
@@ -284,34 +285,6 @@ def menuAdmin():
     print("seleccione una opción")
     op = validarInput("0","5")
 
-def gestionarLocales():
-  print("a) Crear locales")
-  print("b) Modificar local") 
-  print("c) Eliminar local")
-  print("d) Mapas de locales")
-  print("e) Volver")
-
-  op = input("opción: ")
-
-  while op != "e":
-    clear()
-    if op == "a":
-      crear_locales()
-
-    if op == "b":
-      mod_local()
-
-    if op == "c":
-      eliminar_local()
-        
-    if op == "d":
-      mapa_locales()
-
-    if op == "e":
-      clear()
-
-    op = input("opción: ")
-
 # MENU DUEÑO de LOCAL----------------------------------------
 def menuDueno(pos):
   op = ''
@@ -346,11 +319,9 @@ def menuCliente():
     if op == "1":
       buscoDescuento()
     elif op == "2":
-    elif op == "2":
       solicitoDescuento()
     elif op == "3":
       print("diagramado en Chapín")
-
 
 #Funciones del Administrador----------------------------------
 
@@ -359,31 +330,80 @@ def adSolDesc():
   #tamPromociones = os.path.getsize(afPromociones)
   while alPromociones.tell() < os.path.getsize(afPromociones):
     posPromo = alPromociones.tell()
+    # print("REGISTRO: ", posPromo)
     regPromo = pickle.load(alPromociones)
-    
-    if (regPromo.estadoPromo).rstrip() == "Pendiente":
-      print("Promo nro: ",(regPromo.codPromo).rstrip()," ", regPromo.textoPromo,"Desde / Hasta ", (regPromo.fechaDesdeP).rstrip(), (regPromo.fechaHastaP).rstrip())
-      # print("días activa: ")
-      # dias = [0]*7
-      # aux = (regPromo.diasSemana).rstrip('[ ]')
-      # dias = aux.split(',')
-      # for i in range(7):
-      #   print(dias[i], sep=" ", end=" ")
-      # print("Local: ", int((regPromo.codLocal)))
+    diasSemana = [""]*7
+    diasSemana[0] = "Lunes"
+    diasSemana[1] = "Martes"
+    diasSemana[2] = "Miercoles"
+    diasSemana[3] = "Jueves"
+    diasSemana[4] = "Viernes"
+    diasSemana[5] = "Sabado"
+    diasSemana[6] = "Domingo"
+    if (regPromo.estadoPromo).rstrip() == 'pendiente':
+      print("Promo nro: ",(regPromo.codPromo).rstrip()," Descripcion", (regPromo.textoPromo).rstrip()," Desde / Hasta ", (regPromo.fechaDesdeP).rstrip(),"/", (regPromo.fechaHastaP).rstrip())
+      print("Dias activa: ")
+      dias = [0]*7
+      dias = regPromo.diasSemana
+      #aux = (regPromo.diasSemana).rstrip("]")
+      c = 0
+      for i in range(len(regPromo.diasSemana)):
+        if regPromo.diasSemana[i] == '1':
+          print(diasSemana[c], end=" ")
+          c +=1
+        if regPromo.diasSemana[i] == '0':
+          c +=1
+        #print(dias[i], sep=" ", end=" ")
+      
+      posLocal = buscarCodLocal(int(regPromo.codLocal))
+      alLocales.seek(posLocal)
+      regLocal = pickle.load(alLocales)
+      print("Local : ", (regLocal.nombreLocal).rstrip())
+
+  
+  print("Ingrese el codigo de la promocion que quiere modificar o 0 para salir")
+  cod = int(input())
+  cod = buscarCodDesc(cod)
+  while cod > 0:
+    if (regPromo.estadoPromo).rstrip() == 'pendiente':
+      alPromociones.seek(0)
+      pos = alPromociones.tell()
+      regPromo = pickle.load(alPromociones)
       print("¿(A)prueba o (D)eniega?: ")
       op = input()
       while op.upper() != "A" and op.upper() != "D":
         op = input(" Ingrese A para aprobar o D para denegar: ")
       if op.upper() == "A":
-        regPromo.estadoPromo = "Aprobada"
+        regPromo.estadoPromo = "aprobada"
       else:
-        regPromo.estadoPromo = "Denegada"
+        regPromo.estadoPromo = "denegada"
+      alPromociones.seek(pos)
+      pickle.dump(regPromo, alPromociones)
+
+    # if (regPromo.estadoPromo).rstrip() == "pendiente":
+    #   print("Promo nro: ",(regPromo.codPromo).rstrip()," ", regPromo.textoPromo,"Desde / Hasta ", (regPromo.fechaDesdeP).rstrip(), (regPromo.fechaHastaP).rstrip())
+    #   # print("días activa: ")
+    #   # dias = [0]*7
+    #   # aux = (regPromo.diasSemana).rstrip('[ ]')
+    #   # dias = aux.split(',')
+    #   # for i in range(7):
+    #   #   print(dias[i], sep=" ", end=" ")
+    #   # print("Local: ", int((regPromo.codLocal)))
+    #   print("¿(A)prueba o (D)eniega?: ")
+    #   op = input()
+    #   while op.upper() != "A" and op.upper() != "D":
+    #     op = input(" Ingrese A para aprobar o D para denegar: ")
+    #   if op.upper() == "A":
+    #     regPromo.estadoPromo = "aprobada "
+    #   else:
+    #     regPromo.estadoPromo = "denegada "
 
       
-      alPromociones.seek(posPromo)
-      formatearPromociones(regPromo)
-      pickle.dump(regPromo, alPromociones)
-      alPromociones.flush()
+    #   alPromociones.seek(posPromo)
+    #   formatearPromociones(regPromo)
+    #   pickle.dump(regPromo, alPromociones)
+    #   alPromociones.flush()
+  input()
 
 def utilizacionDesc():
   print("d")
@@ -446,7 +466,7 @@ def crearDesc(pos):
         regPromo.fechaDesdeP = fechaini
         regPromo.fechaHastaP = fechafin
         regPromo.diasSemana = dias
-        regPromo.estadoPromo = "Pendiente"
+        regPromo.estadoPromo = "pendiente"
         regPromo.codLocal = cod
         formatearPromociones(regPromo)
         alPromociones.seek(posPromo)
@@ -476,7 +496,7 @@ def buscoDescuento():
 
 def solicitoDescuento():
   global codCliente
-  codPromo=input("ingrese el código de promoción. Ingrese 0 para salir")
+  codPromo=int(input("ingrese el código de promoción. Ingrese 0 para salir"))
   if codPromo != 0:
     if buscarCodDesc(codPromo) != -1:
       alPromociones.seek(buscarCodDesc(codPromo),0)
@@ -489,6 +509,7 @@ def solicitoDescuento():
         regUsoPromo.fechaUsoPromo = datetime.datetime.today()
         formatearUsoPromos(regUsoPromo)
         pickle.dump(regUsoPromo,alUsoPromos)
+        alUsoPromos.flush()
         
 
         
@@ -501,10 +522,10 @@ def solicitoDescuento():
 def buscarCodDesc(cod):
   alPromociones.seek(0)
   b=False
-  while alPromociones< os.path.getsize(afPromociones) and not(b):
+  while alPromociones.tell() < os.path.getsize(afPromociones) and not(b):
     pos = alPromociones.tell()
-    regPromo = pickle.load(afPromociones)
-    if (regPromo.codPromo).rstrip() == cod:
+    regPromo = pickle.load(alPromociones)
+    if int((regPromo.codPromo).rstrip()) == cod:
       b = True
       return pos
   if not(b):
@@ -586,6 +607,7 @@ def crearLocal():
       formatearLocal(regLocal)
       alLocales.seek(pos)
       pickle.dump(regLocal, alLocales)
+      alLocales.flush()
 
       print('Quiere ingresar otro local? Y/N')
       op = validarYN()
@@ -701,6 +723,7 @@ def checkNombreLocal():
     res = buscarLocal(local)
   return local
 
+#ESTO ES DICOTOMICA D:
 def buscarLocal(nombre):
   b = False
   alLocales.seek(0)
