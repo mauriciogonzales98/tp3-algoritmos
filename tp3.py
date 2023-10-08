@@ -149,7 +149,7 @@ def registrarUsuario(tipoUsuario):
   print("ingrese una contraseña de hasta 8 caracteres: ")
   contrasena = getpass()
 
-  if buscarUsuario(email) == -1 and len(contrasena) <= 8:
+  if buscarUsuario(email) == -1 and len(contrasena) == 8:
     tamUsuarios = os.path.getsize(afUsuarios)
     alUsuarios.seek(0)
     regUsuario = pickle.load(alUsuarios)
