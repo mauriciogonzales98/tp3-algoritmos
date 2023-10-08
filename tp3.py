@@ -31,7 +31,7 @@ class Promociones:
     self.fechaDesdeP = ""
     self.fechaHastaP = ""
     self.diasSemana = [0]*7
-    self.estadoLocal = ""
+    self.estadoPromo = ""
     self.codLocal = 0
 
 class UsoPromos:
@@ -68,6 +68,16 @@ def formatearLocal(regLocal):
   regLocal.rubroLocal = regLocal.rubroLocal.ljust(20)
   regLocal.codUsuario = str(regLocal.codUsuario).ljust(4)
   regLocal.estadoLocal = regLocal.estadoLocal.ljust(1)
+
+def formatearPromociones(regPromo):
+  regPromo.codPromo = str(regPromo.codPromo).ljust(1)
+  regPromo.textoPromo = regPromo.textoPromo.ljust(200)
+  regPromo.fechaDesdeP = str(regPromo.fechaDesdeP).ljust(10)
+  regPromo.fechaHastaP = str(regPromo.fechaHastaP).ljust(10)
+  regPromo.diasSemana = str(regPromo.diasSemana).ljust(7)
+  regPromo.estadoPromo = regPromo.estadoPromo.ljust(10)
+  regPromo.codLocal = str(regPromo.codLoca).ljust(1)
+
 #Funciones------------------------------------------------------------------------
 
 #Funcion clear para limpiar la consola, verifica que SO se esta usando
@@ -144,7 +154,7 @@ def cargaAuxiliar():
 
 #Funcion para registrar clientes
 def registrarUsuario(tipoUsuario):
-  global regUsuario
+  #global regUsuario
   email = input("ingrese su email: ")
   print("ingrese una contraseña de hasta 8 caracteres: ")
   contrasena = getpass()
@@ -156,7 +166,7 @@ def registrarUsuario(tipoUsuario):
     tamregUsuario = alUsuarios.tell()
     codUser = tamUsuarios//tamregUsuario
     print(codUser)
-    regUsuario.codUsuario =codUser 
+    regUsuario.codUsuario = codUser
     regUsuario.nombreUsuario = email
     regUsuario.claveUsuario = contrasena
     regUsuario.tipoUsuario = tipoUsuario
@@ -173,9 +183,10 @@ def registrarUsuario(tipoUsuario):
 #Determina qué usuario se logueó y llama al menú correspondiente -----------------------
 def usuarioLogeado(pos):
   alUsuarios.seek(pos)
+  regUsuario = pickle.load(alUsuarios)
   if (regUsuario.tipoUsuario).rstrip() == "administrador":
     menuAdmin()
-  elif(regUsuario.tipoUsuario).rstrip() == "duenolocal":
+  elif (regUsuario.tipoUsuario).rstrip() == "duenolocal":
     menuDueno(pos)
   elif (regUsuario.tipoUsuario).rstrip() == "cliente":
     menuCliente()
@@ -293,9 +304,10 @@ def menuDueno(pos):
         clear()
         print("Elija una opcion:")
         print("1)Gestión de Descuentos")
-        print('    a)Crear descuento para mi local\n')
+        print('    a)Crear descuento para mi local')
         print('    b)Modificar descuento de mi local')
-        print('    c)Eliminar descuento de mi local\n')
+        print('    c)Eliminar descuento de mi local')
+        print('    d)Volver')
         op = validarInput('a', 'd')
         if op == "a":
           crearDesc(pos)
@@ -303,7 +315,6 @@ def menuDueno(pos):
           modDesc()
         elif op == "c":
           elimDesc()
-        op = validarInput('a', 'd')
     elif op == "2":
       adPedDesc()
     else:
@@ -373,38 +384,79 @@ def crearDesc(pos):
   cod = int(input())
   if cod != -1:
     posLocal = buscarCodLocal(cod)
-    alLocales.seek(posLocal)
-    regLocal = pickle.load(alLocales)
-    if regLocal.codUsuario == regUsuario.codUsuario:
+    if posLocal != -1:
+      alLocales.seek(posLocal)
+      regLocal = pickle.load(alLocales)
+      if regLocal.codUsuario == regUsuario.codUsuario:
 
-      print("Ingrese la descripcion de la promocion: ")
-      promodesc = input()
-
-      while len(promodesc) < 1 or len(promodesc) > 200:
-        print("Descripcion no valida. Ingrese nuevamente la descripcion")
+        print("Ingrese la descripcion de la promocion: ")
         promodesc = input()
 
-      print("Ingrese la fecha de comienzo de la promocion en formato DD/MM/AAAA. No puede ser anterior a la fecha de hoy.")
-      bandera = True
-      while bandera: 
-        fechaini = input()
-        datetime.datetime.strptime(fechaini, '%d/%m/%Y')
-        hoy = datetime.datetime.today()
-        if fechaini >= hoy.strptime(hoy, '%d/%m/%Y'):
-          bandera = False
-        else:
-          print("La fecha no es valida. Intentelo nuevamente")
+        while len(promodesc) < 1 or len(promodesc) > 200:
+          print("Descripcion no valida. Ingrese nuevamente la descripcion")
+          promodesc = input()
 
-      print("Ingrese la fecha de finalizacion de la promocion en formato DD/MM/AAAA. Debe ser posterior a la fecha de inicio.")
-      bandera = True
-      while bandera:
-        fechafin = input()
-        datetime.datetime.strptime(fechafin, '%d/%m/%Y')
-        if fechafin > fechaini:
-          bandera = False
+        bandera = True
+        #hoy = (datetime.datetime.today()).strftime('%d/%m/%Y')
+        hoy = datetime.datetime.today()
+        hoy = datetime.datetime.strptime(hoy, '%d/%m/%Y')
+        hoy = datetime.datetime.strftime('%d/%m/%Y')
+        print("LA FECHA DE HOY ES: ", hoy)
+        input()
+        print("Ingrese la fecha de comienzo de la promocion en formato DD/MM/AAAA. No puede ser anterior a la fecha de hoy.")
+        while bandera:
+          try:
+              fechaini = input()
+              fechaini = datetime.datetime.strptime(fechaini, '%d/%m/%Y')
+              if fechaini >= hoy:
+                bandera = False
+          except ValueError:
+              print("La fecha no es valida. Intentelo nuevamente")
+
+        print("Ingrese la fecha de finalizacion de la promocion en formato DD/MM/AAAA. Debe ser posterior a la fecha de inicio.")
+        bandera = True
+        while bandera:
+          try:
+            fechafin = input()
+            fechafin = datetime.datetime.strptime(fechafin, '%d/%m/%Y')
+            if fechafin > fechaini:
+              bandera = False
+          except ValueError:
+            print("La fecha no es valida. Intentelo nuevamente")
+
+        op = ' '
+        dias = [0]*7
+        while op != '0':
+          print("Que dias esta activa la promocion? Pulse 0 para terminar")
+          print("1) Domingo")
+          print("2) Lunes")
+          print("3) Martes")
+          print("4) Miercoles")
+          print("5) Jueves")
+          print("6) Viernes")
+          print("7) Sabado")
+          op = validarInput('0', '7')
+          dias[int(op)-1] = 1
+
+
+        tmaxPromo = os.path.getsize(alPromociones)
+        alPromociones.seek(0)
+        if tmaxPromo != 0:
+          regPromo = pickle.load(alPromociones)
+          tPromo = alPromociones.tell()
+          codigo = tmaxPromo // tPromo
         else:
-          print("La fecha no es valida. Intentelo nuevamente")
-      #falta guardar los datos en el registro, la funcion de formateo y dumpearlo
+          codigo = 0
+
+        regPromo.codPromo = codigo
+        regPromo.textoPromo = promodesc
+        regPromo.fechaDesdeP = fechaini
+        regPromo.fechaHastaP = fechafin
+        regPromo.diasSemana = str(regPromo.diasSemana).ljust(7)
+        regPromo.estadoPromo = "Pendiente"
+        regPromo.codLocal = cod
+        formatearPromociones(regPromo)
+        #falta guardar los datos en el registro, la funcion de formateo y dumpearlo
     else:
       print("Usted no es el dueño de este local o el codigo es incorrecto.")
 
@@ -494,7 +546,6 @@ def crearLocal():
       codigo = tmaxLocal // tRegLocal
     else:
       codigo = 0
-    print("CODIGO ", codigo)
     
     regLocal = Locales()
     regLocal.nombreLocal = nombre
@@ -694,6 +745,9 @@ def buscarCodLocal(cod):
     else:
       inicio = mid + 1
 
+  if not(b):
+    pos = -1
+
   return pos
 
 def mostrarLocales():
@@ -754,7 +808,7 @@ if not os.path.exists(afPromociones):
   alPromociones = open(afPromociones, "w+b")
 else:
   alPromociones = open(afPromociones, "r+b")
-regPromocion = Promociones()
+regPromo = Promociones()
 
 # Abro archivo Locales
 afLocales = "C:\\Users\\PC\\Desktop\\TP3 algoritmos\\locales.dat"
