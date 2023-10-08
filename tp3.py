@@ -449,11 +449,6 @@ def crearDesc(pos):
     else:
       print("Usted no es el dueño de este local o el código es incorrecto.")
 
-def adPedDesc():
-  print("h")
-
-def repUsoDesc():
-  print("i")
 
 #Funciones del Cliente
 
