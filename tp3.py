@@ -76,7 +76,7 @@ def formatearPromociones(regPromo):
   regPromo.fechaHastaP = str(regPromo.fechaHastaP).ljust(10)
   regPromo.diasSemana = str(regPromo.diasSemana).ljust(7)
   regPromo.estadoPromo = regPromo.estadoPromo.ljust(10)
-  regPromo.codLocal = str(regPromo.codLoca).ljust(1)
+  regPromo.codLocal = str(regPromo.codLocal).ljust(1)
 
 #Funciones------------------------------------------------------------------------
 
@@ -395,9 +395,9 @@ def crearDesc(pos):
 
         bandera = True
         #hoy = (datetime.datetime.today()).strftime('%d/%m/%Y')
-        hoy = datetime.datetime.today()
-        hoy = datetime.datetime.strptime(hoy, '%d/%m/%Y')
-        hoy = datetime.datetime.strftime('%d/%m/%Y')
+        hoy = (datetime.datetime.today()).strftime('%d/%m/%Y')
+        #hoy = datetime.datetime.strftime('%d/%m/%Y')
+        hoy = datetime.datetime.strptime(str(hoy), '%d/%m/%Y')
         print("LA FECHA DE HOY ES: ", hoy)
         input()
         print("Ingrese la fecha de comienzo de la promocion en formato DD/MM/AAAA. No puede ser anterior a la fecha de hoy.")
@@ -436,7 +436,7 @@ def crearDesc(pos):
           dias[int(op)-1] = 1
 
 
-        tmaxPromo = os.path.getsize(alPromociones)
+        tmaxPromo = os.path.getsize(afPromociones)
         alPromociones.seek(0)
         if tmaxPromo != 0:
           regPromo = pickle.load(alPromociones)
@@ -445,17 +445,21 @@ def crearDesc(pos):
         else:
           codigo = 0
 
+        regPromo = Promociones()
         regPromo.codPromo = codigo
         regPromo.textoPromo = promodesc
         regPromo.fechaDesdeP = fechaini
         regPromo.fechaHastaP = fechafin
-        regPromo.diasSemana = str(regPromo.diasSemana).ljust(7)
+        regPromo.diasSemana = dias
         regPromo.estadoPromo = "Pendiente"
         regPromo.codLocal = cod
         formatearPromociones(regPromo)
+        alPromociones.seek(2)
+        pickle.dump(regPromo, alPromociones)
         #falta guardar los datos en el registro, la funcion de formateo y dumpearlo
     else:
       print("Usted no es el dueño de este local o el codigo es incorrecto.")
+      input()
 
 def modDesc():
  print("f")
@@ -552,6 +556,7 @@ def crearLocal():
     regLocal.estadoLocal = 'A'
     regLocal.codLocal = codigo
     formatearLocal(regLocal)
+    alLocales.seek(2)
     pickle.dump(regLocal, alLocales)
 
     print('Quiere ingresar otro local? Y/N')
@@ -806,7 +811,7 @@ if not os.path.exists(afPromociones):
   alPromociones = open(afPromociones, "w+b")
 else:
   alPromociones = open(afPromociones, "r+b")
-regPromo = Promociones()
+regPromo= Promociones()
 
 
 # Abro archivo Locales
@@ -815,7 +820,6 @@ if not os.path.exists(afLocales):
   alLocales = open(afLocales, "w+b")
 else:
   alLocales = open(afLocales, "r+b")
-
 regLocal = Locales()
 
 global rubros 
