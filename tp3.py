@@ -184,12 +184,14 @@ def registrarUsuario(tipoUsuario):
 
 #Determina qué usuario se logueó y llama al menú correspondiente -----------------------
 def usuarioLogeado(pos):
+  global codDueno
   global codCliente
   alUsuarios.seek(pos)
   regUsuario = pickle.load(alUsuarios)
   if (regUsuario.tipoUsuario).rstrip() == "administrador":
     menuAdmin()
   elif (regUsuario.tipoUsuario).rstrip() == "duenolocal":
+    codDueno = (regUsuario.codUsuario).rstrip()
     menuDueno(pos)
   elif (regUsuario.tipoUsuario).rstrip() == "cliente":
     codCliente = (regUsuario.codUsuario).rstrip()
@@ -267,7 +269,7 @@ def menuAdmin():
     elif op == "4":
       print("codificado en chapín")
     elif op == '5':
-      utilizacionDesc()
+      utilizacionDesc("administrador")
     else:
       clear()
       input('Adios!')
@@ -328,7 +330,7 @@ def menuDueno(pos):
     if op == '1':
       crearDesc(pos)
     elif op == '2':
-      repUsoDesc()
+      utilizacionDesc("dueno")
     elif op == '3':
       input("Diagramado en chapin")
 
@@ -345,7 +347,6 @@ def menuCliente():
 
     if op == "1":
       buscoDescuento()
-    elif op == "2":
     elif op == "2":
       solicitoDescuento()
     elif op == "3":
@@ -385,8 +386,46 @@ def adSolDesc():
       pickle.dump(regPromo, alPromociones)
       alPromociones.flush()
 
-def utilizacionDesc():
-  print("d")
+def utilizacionDesc(tipoUsuario):
+  global codDueno
+  fDesde = input("ingrese una fecha de inicio en el formato DD/MM/AAAA")
+  fDesde = datetime.datetime.strptime(str(fDesde),"%d/%m/%Y")
+  fHasta = input ("ingrese una fecha de finalización en el formato DD/MM/AAAA")
+  fHasta = datetime.datetime.strptime(str(fDesde),"%d/%m/%Y")
+
+  if tipoUsuario == "administrador":
+    alUsoPromos.seek(0)
+    alPromociones.seek(0)
+    while alPromociones.tell() < os.path.getsize(afPromociones):
+      regPromo = pickle.load(alPromociones)
+      while alUsoPromos.tell()< os.path.getsize(afUsoPromos):
+        cantUsoPromo = 0
+        if (regUsoPromo.codPromo).rstrip() == (regPromo.codPromo).rstrip():
+          cantUsoPromo = cantUsoPromo + 1
+      
+      if datetime.datetime.strptime(str((regPromo.fechaDesdeP).rstrip()), "%d/%m/%Y") >= fDesde and datetime.datetime.strptime(str((regPromo.fechaHastaP).rstrip()), "%d/%m/%Y") <= fHasta and (regPromo.estadoPromo).rstrip() == "aprobada":
+        # Error al imprimir el array, no se puede trabajar ese campo como array
+        print ("código: ", (regPromo.codPromo).rstrip(), " promoción: ", (regPromo.textoPromo).rstrip(), " fecha Desde: ", (regPromo.fechaDesdeP).rstrip(), " Fecha Hasta: ", (regPromo.fechaHastaP).rstrip(), " días activa: ", (regPromo.diasSemana), "local: ", (regPromo.codLocal).rstrip(), "veces usado: ", cantUsoPromo) 
+  #Este else contiene el caso del dueño de locales, que solo ve las promociones aplicadas a sus locales
+  #Posible error: un mismo dueño puede tener mútliples locales, este procedure no tiene eso en cuenta
+
+  else:
+
+    alUsoPromos.seek(0)
+    alPromociones.seek(0)
+    while alPromociones.tell() < os.path.getsize(afPromociones):
+      regPromo = pickle.load(alPromociones)
+      while alUsoPromos.tell()< os.path.getsize(afUsoPromos):
+        cantUsoPromo = 0
+        if (regUsoPromo.codPromo).rstrip() == (regPromo.codPromo).rstrip() and (regPromo.codLocal).rstrip():
+          cantUsoPromo = cantUsoPromo + 1
+      
+      if datetime.datetime.strptime(str((regPromo.fechaDesdeP.rstrip())), "%d/%m/%Y") >= fDesde and datetime.datetime.strptime(str((regPromo.fechaHastaP).rstrip()), "%d/%m/%Y") <= fHasta and (regPromo.estadoPromo).rstrip() == "aprobada":
+        
+        print ("código: ", (regPromo.codPromo).rstrip(), " promoción: ", (regPromo.textoPromo).rstrip(), " fecha Desde: ", (regPromo.fechaDesdeP).rstrip(), " Fecha Hasta: ", (regPromo.fechaHastaP).rstrip(), " días activa: ", (regPromo.diasSemana), "veces usado: ", cantUsoPromo)   
+
+
+
 
 # Funciones del Dueño de Local
 def crearDesc(pos):
@@ -498,6 +537,18 @@ def buscarCodDesc(cod):
     pos = alPromociones.tell()
     regPromo = pickle.load(afPromociones)
     if (regPromo.codPromo).rstrip() == cod:
+      b = True
+      return pos
+  if not(b):
+    return -1
+
+def buscarCodUsoPromo(cod):
+  alUsoPromos.seek(0)
+  b=False
+  while alUsoPromos< os.path.getsize(afUsoPromos) and not(b):
+    pos = alUsoPromos.tell()
+    regUsoPromo = pickle.load(afUsoPromos)
+    if (regUsoPromo.codPromo).rstrip() == cod:
       b = True
       return pos
   if not(b):
