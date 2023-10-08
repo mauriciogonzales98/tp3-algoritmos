@@ -22,7 +22,7 @@ class Locales:
     self.ubicacionLocal = ""
     self.rubroLocal = ""
     self.codUsuario = 0
-    self.estadoLocal = "B"
+    self.estadoLocal = ""
 
 class Promociones:
   def __init__(self):  
@@ -209,7 +209,6 @@ def buscarUsuario(usuario):
 # Declarativa de los menus --------------------------------------------------
 
 # MENU ADMINISTRADOR
-
 def menuAdmin():
   clear()
   print("ADMINISTRADOR")
@@ -401,14 +400,14 @@ def crearDesc(pos):
         op = ' '
         dias = [0]*7
         while op != '0':
-          print("Que dias esta activa la promocion? Pulse 0 para terminar")
-          print("1) Domingo")
-          print("2) Lunes")
-          print("3) Martes")
-          print("4) Miercoles")
-          print("5) Jueves")
-          print("6) Viernes")
-          print("7) Sabado")
+          print("Que dias esta activa la promocion? Pulse 0 para terminar.")
+          print("1) Lunes")
+          print("2) Martes")
+          print("3) Miercoles")
+          print("4) Jueves")
+          print("5) Viernes")
+          print("6) Sabado")
+          print("7) Domingo")
           op = validarInput('0', '7')
           dias[int(op)-1] = 1
 
@@ -419,8 +418,10 @@ def crearDesc(pos):
           regPromo = pickle.load(alPromociones)
           tPromo = alPromociones.tell()
           codigo = tmaxPromo // tPromo
+          posPromo = codigo * tPromo
         else:
           codigo = 0
+          posPromo = 0
 
         regPromo = Promociones()
         regPromo.codPromo = codigo + 1
@@ -431,7 +432,7 @@ def crearDesc(pos):
         regPromo.estadoPromo = "Pendiente"
         regPromo.codLocal = cod
         formatearPromociones(regPromo)
-        alPromociones.seek(2)
+        alPromociones.seek(posPromo)
         pickle.dump(regPromo, alPromociones)
         #falta guardar los datos en el registro, la funcion de formateo y dumpearlo
     else:
@@ -492,49 +493,54 @@ def gestionarLocales():
 
 def crearLocal():
 
-  op = 'y'
-  while op == 'y':
-    clear()
-    mostrarLocales()
+  if hayDuenos():
+    op = 'y'
+    while op == 'y':
+      clear()
+      mostrarLocales()
 
-    nombre = checkNombreLocal()
+      nombre = checkNombreLocal()
 
-    print('Ingrese ubicacion:')
-    ubicacion = input()
-    while len(ubicacion)<1 or len(ubicacion)>50:
-      print("La ubicacion es muy larga")
+      print('Ingrese ubicacion:')
       ubicacion = input()
+      while len(ubicacion)<1 or len(ubicacion)>50:
+        print("La ubicacion es muy larga")
+        ubicacion = input()
 
-    codDueno = checkCodigoDueno()
+      codDueno = checkCodigoDueno()
 
-    print('Ingrese rubro:')
-    rubro = rubroLocales()
+      print('Ingrese rubro:')
+      rubro = rubroLocales()
 
-    tmaxLocal = os.path.getsize(afLocales)
-    alLocales.seek(0)
-    if tmaxLocal != 0:
-      regLocal = pickle.load(alLocales)
-      tRegLocal = alLocales.tell()
-      codigo = tmaxLocal // tRegLocal
-    else:
-      codigo = 0
-    
-    regLocal = Locales()
-    regLocal.nombreLocal = nombre
-    regLocal.ubicacionLocal = ubicacion
-    regLocal.rubroLocal = rubro
-    regLocal.codUsuario = codDueno
-    regLocal.estadoLocal = 'A'
-    regLocal.codLocal = codigo + 1
-    formatearLocal(regLocal)
-    alLocales.seek(2)
-    pickle.dump(regLocal, alLocales)
+      tmaxLocal = os.path.getsize(afLocales)
+      alLocales.seek(0)
+      if tmaxLocal != 0:
+        regLocal = pickle.load(alLocales)
+        tRegLocal = alLocales.tell()
+        codigo = tmaxLocal // tRegLocal
+        pos = codigo * tRegLocal
+      else:
+        codigo = 0
+        pos = 0
+      
+      regLocal = Locales()
+      regLocal.nombreLocal = nombre
+      regLocal.ubicacionLocal = ubicacion
+      regLocal.rubroLocal = rubro
+      regLocal.codUsuario = codDueno
+      regLocal.estadoLocal = 'A'
+      regLocal.codLocal = codigo + 1
+      formatearLocal(regLocal)
+      alLocales.seek(pos)
+      pickle.dump(regLocal, alLocales)
 
-    print('Quiere ingresar otro local? Y/N')
-    op = validarYN()
+      print('Quiere ingresar otro local? Y/N')
+      op = validarYN()
 
-  # actualizarMapa()
-  # mostrarRubros()
+    # actualizarMapa()
+    # mostrarRubros()
+  else:
+    print("No existen dueños de locales registrados, debe registrar al menos 1.")
 
 def modificarLocal():
   clear()
@@ -616,7 +622,6 @@ def eliminarLocal():
           regLocal.estadoLocal = 'B'
           calcularRubros()
           
-
 def calcularRubros():
   alLocales.seek(0)
   tmLocales = os.path.getsize(afLocales)
@@ -754,7 +759,35 @@ def rubroLocales():
   return r
 
 def mostrarPromociones(pos):
-  print("a\n")
+  alUsuarios.seek(pos)
+  regUsuario = pickle.load(alUsuarios)
+  #busco locales por codigo de usuario
+  alLocales.seek(0)
+  while alLocales.tell() < os.path.getsize(afLocales):
+    #posLocal = alLocales.tell()
+    regLocal = pickle.load(alLocales)
+    if (regLocal.codUsuario).rstrip() == (regUsuario.codUsuario).rstrip():
+      alPromociones.seek(0)
+      while alPromociones.tell() < os.path.getsize(afPromociones):
+        posPromo = alPromociones.tell()
+        regPromo = pickle.load(alPromociones)
+        if (regPromo.codLocal).rstrip() == (regLocal.codLocal).rstrip():
+          print("Descuento: ", regPromo.textoPromo,
+                 "Fecha de inicio:", regPromo.fechaDesdeP, 
+                 "Fecha de finalizacion: ", regPromo.fechaHastaP,
+                 "Local: ", regLocal.nombreLocal,
+                 "Estado: ", regPromo.estadoPromo)
+
+def hayDuenos():
+  alUsuarios.seek(0)
+  b = False
+  while alUsuarios.tell() < os.path.getsize(afUsuarios) and not(b):
+    regUsuario = pickle.load(alUsuarios)
+    if (regUsuario.tipoUsuario).rstrip() == 'duenolocal':
+      b = True
+  print("HAY DUEÑOS", b)
+  input()
+  return b
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#- Programa principal -#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 # Apertura de archivos --------------------------------------------------------
