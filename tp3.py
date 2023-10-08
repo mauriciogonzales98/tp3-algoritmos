@@ -347,8 +347,24 @@ def adSolDesc():
   alPromociones.seek(0)
   tamPromociones = os.path.getsize(afPromociones)
   while alPromociones < tamPromociones:
-
+    posPromo = alPromociones.tell()
     regPromocion = pickle.load(alPromociones)
+    
+    if regPromocion.estadoLocal == "pendiente":
+      print("Promo nro: ",regPromocion.codPromo," ", regPromocion.textoPromo,"Desde / Hasta ", regPromocion.fechaDesdeP, regPromocion.fechaHastaP)
+      for i in range (7):
+        print("días activa: ",regPromocion.diasSemana[i])
+      print("Local: ",regPromocion.codLocal)
+      
+      op= input("¿(A)prueba o (D)eniega?").upper
+      while op != "A" or op != "D":
+        op = input(" Ingrese A para aprobar o D para denegar")
+      if op == "A":
+        regPromocion.estadoLocal = "aprobada"
+      else:
+        regPromocion.estadoLocal = "denegada"
+      
+      
 
 
 def utilizacionDesc():
@@ -824,7 +840,7 @@ if op == '1':
     input()
 
 elif op == '2':
-  registrarCliente()
+  registrarUsuario("cliente")
 
 else:
   clear()
