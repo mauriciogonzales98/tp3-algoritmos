@@ -49,7 +49,7 @@ class Novedades:
     self.tipoUsuario = ""
     self.estadoLocal = "B"
 
-class Rubro():     
+class Rubro:     
   def __init__(self):
     self.rubro = ""
     self.cant = 0
@@ -133,7 +133,8 @@ def validarYN():
   while op.lower() != 'y' and op.lower() != 'n':
     print('La opcion ingresada no es valida')
     op = input()
-  return (op.lower)
+  op = op.lower()
+  return op
 
 #Cargo datos arbitrarios para testear ------------------------------------
 def cargaAuxiliar():
@@ -148,13 +149,20 @@ def cargaAuxiliar():
   pickle.dump(regUsuario, alUsuarios)
   alUsuarios.flush()
 
-  #Inicializo el array de rubros
-  rubros[0].rubro = "indumentaria"
-  rubros[0].cant = 0
-  rubros[1].rubro = "perfumeria"
-  rubros[1].cant = 0
-  rubros[2].rubro = "comida"
-  rubros[2].cant = 0
+  global rubros
+  regRubros=Rubro()
+  rubros=[[regRubros],[regRubros],[regRubros]]
+  regRubros.rubro="perfumeria"
+  regRubros.cant=0
+  rubros[0]=regRubros
+  RegRu1=Rubro()
+  RegRu1.rubro="indumentaria"
+  RegRu1.cant=0
+  rubros[1]=RegRu1
+  RegRu2=Rubro()
+  RegRu2.rubro="comida"
+  RegRu2.cant=0
+  rubros[2]=RegRu2
 
 #Funcion para registrar clientes
 def registrarUsuario(tipoUsuario):
@@ -591,49 +599,51 @@ def crearLocal():
       mostrarLocales()
 
       nombre = checkNombreLocal()
-
-      print('Ingrese ubicacion:')
-      ubicacion = input()
-      while len(ubicacion)<1 or len(ubicacion)>50:
-        print("La ubicacion es muy larga")
+      if nombre != '0':
+        print('Ingrese ubicacion:')
         ubicacion = input()
+        while len(ubicacion)<1 or len(ubicacion)>50:
+          print("La ubicacion es muy larga")
+          ubicacion = input()
 
-      codDueno = checkCodigoDueno()
+        codDueno = checkCodigoDueno()
 
-      print('Ingrese rubro:')
-      rubro = rubroLocales()
+        print('Ingrese rubro:')
+        rubro = rubroLocales()
 
-      tmaxLocal = os.path.getsize(afLocales)
-      alLocales.seek(0)
-      if tmaxLocal != 0:
-        regLocal = pickle.load(alLocales)
-        tRegLocal = alLocales.tell()
-        codigo = tmaxLocal // tRegLocal
-        pos = codigo * tRegLocal
+        tmaxLocal = os.path.getsize(afLocales)
+        alLocales.seek(0)
+        if tmaxLocal != 0:
+          regLocal = pickle.load(alLocales)
+          tRegLocal = alLocales.tell()
+          codigo = tmaxLocal // tRegLocal
+          pos = codigo * tRegLocal
+        else:
+          codigo = 0
+          pos = 0
+        
+        regLocal = Locales()
+        regLocal.nombreLocal = nombre
+        regLocal.ubicacionLocal = ubicacion
+        regLocal.rubroLocal = rubro
+        regLocal.codUsuario = codDueno
+        regLocal.estadoLocal = 'A'
+        regLocal.codLocal = codigo + 1
+        formatearLocal(regLocal)
+        alLocales.seek(pos)
+        pickle.dump(regLocal, alLocales)
+        alLocales.flush()
+
+        print('Quiere ingresar otro local? Y/N')
+        op = validarYN()
       else:
-        codigo = 0
-        pos = 0
-      
-      regLocal = Locales()
-      regLocal.nombreLocal = nombre
-      regLocal.ubicacionLocal = ubicacion
-      regLocal.rubroLocal = rubro
-      regLocal.codUsuario = codDueno
-      regLocal.estadoLocal = 'A'
-      regLocal.codLocal = codigo + 1
-      formatearLocal(regLocal)
-      alLocales.seek(pos)
-      pickle.dump(regLocal, alLocales)
-      alLocales.flush()
-
-      print('Quiere ingresar otro local? Y/N')
-      op = validarYN()
-
-      ordenarLocales()
+        op = 'n'
     # actualizarMapa()
-    # mostrarRubros()
   else:
     print("No existen dueños de locales registrados, debe registrar al menos 1.")
+
+  ordenarLocales()
+  mostrarRubros()
 
 def modificarLocal():
   clear()
@@ -662,6 +672,8 @@ def modificarLocal():
     if regLocal.estadoLocal == 'A':
       print("Quiere modificar el nombre? Y/N")
       op = validarYN()
+      print("LA OPCION QUE SE INGRESO ES: ", op)
+      input()
       if op == 'y':
         nombre = checkNombreLocal()
         regLocal.nombreLocal = nombre
@@ -681,6 +693,7 @@ def modificarLocal():
       if op == 'y':
         regLocal.rubroLocal = rubroLocales()
         calcularRubros()
+        #ordenarRubros()
 
 
   
@@ -692,6 +705,8 @@ def modificarLocal():
         regLocal.codUsuario = codDueno
 
       formatearLocal(regLocal)
+      alLocales.seek(res)
+      pickle.dump(regLocal, alLocales)
     else:
       print('No se puede modificar los datos de un local inactivo')
 
@@ -714,24 +729,57 @@ def eliminarLocal():
         if op == 'y':
           regLocal.estadoLocal = 'B'
           calcularRubros()
+          ordenarRubros()
+          formatearLocal(regLocal)
+          alLocales.seek(res)
+          pickle.dump(regLocal, alLocales)
           
 def calcularRubros():
+  global rubros
   alLocales.seek(0)
   tmLocales = os.path.getsize(afLocales)
-  rubros[0].cant = 0
-  rubros[1].cant = 0
-  rubros[2].cant = 0
+  for i in range(3):
+    regRubro = rubros[i]
+    regRubro.cant = 0
+    rubros[i] = regRubro
   while alLocales.tell() < tmLocales:
     regLocal = pickle.load(alLocales)
-    if (regLocal.rubroLocal).rstrip() == "indumentaria" and (regLocal.estadoLocal).rstrip == 'A':
-      rubros[0].cant += 1
-    if (regLocal.rubroLocal).rstrip() == "perfumeria" and (regLocal.estadoLocal).rstrip == 'A':
-      rubros[1].cant += 1
-    if (regLocal.rubroLocal).rstrip() == "comida" and (regLocal.estadoLocal).rstrip == 'A':
-      rubros[2].cant += 1
+    if (regLocal.estadoLocal).rstrip() == 'A':
+      for i in range(3):
+        regRubro = rubros[i]
+        if regRubro.rubro == (regLocal.rubroLocal).rstrip():
+          regRubro.cant += 1
+          rubros[i] = regRubro
+    # if (regLocal.rubroLocal).rstrip() == "indumentaria" and (regLocal.estadoLocal).rstrip == 'A':
+    #   rubros[0].cant += 1
+    # if (regLocal.rubroLocal).rstrip() == "perfumeria" and (regLocal.estadoLocal).rstrip == 'A':
+    #   rubros[1].cant += 1
+    # if (regLocal.rubroLocal).rstrip() == "comida" and (regLocal.estadoLocal).rstrip == 'A':
+    #   rubros[2].cant += 1
+
+def mostrarRubros():
+  calcularRubros()
+  ordenarRubros()
+  global rubros
+  
+  print(rubros[0].rubro,": ", rubros[0].cant, sep="", end="\n")
+  print(rubros[1].rubro,": ", rubros[1].cant, sep="", end="\n")
+  print(rubros[2].rubro,": ", rubros[2].cant, sep="", end="\n")
+  
+  input()
+
+def ordenarRubros():
+  global rubros
+  for i in range(0, 2):
+    for j in range (i+1, 3):
+      if rubros[i].cant < rubros[j].cant:
+        aux = Rubro()
+        aux = rubros[i]
+        rubros[i] = rubros[j]
+        rubros[j] = aux
 
 def checkNombreLocal():
-  print("Ingrese el nombre del local a crear")
+  print("Ingrese el nombre del local a crear o 0 para salir")
   local = input()
   res = buscarLocal(local)
   while (len(local) < 1 or len(local)>50) and res != -1: 
@@ -740,19 +788,9 @@ def checkNombreLocal():
     res = buscarLocal(local)
   return local
 
+
 #ESTO ES DICOTOMICA D:
 def buscarLocal(nombre):
-  b = False
-  alLocales.seek(0)
-  tmLocales = os.path.getsize(afLocales)
-  while (alLocales.tell() < tmLocales) and not(b):
-    pos = alLocales.tell()
-    regLocal = pickle.load(alLocales)
-    if (nombre == (regLocal.nombreLocal).rstrip()):
-      b = True
-
-  if not(b):
-    pos = -1
 
   alLocales.seek(0)
   regLocal = pickle.load(alLocales)
@@ -764,14 +802,14 @@ def buscarLocal(nombre):
   inicio = 0
   fin = cantLocales
   b = False
-  while alLocales.tell()<tmLocales and not(b):
+  while inicio <= fin and not(b):
     mid = (inicio + fin)//2
     alLocales.seek(mid*tLocal)
     pos = alLocales.tell()
     regLocal = pickle.load(alLocales)
-    if int(regLocal.codLocal) == cod:
+    if regLocal.nombreLocal == nombre:
       b = True
-    elif cod < int(regLocal.codLocal):
+    elif nombre < regLocal.nombreLocal:
       fin = mid - 1
     else:
       inicio = mid + 1
@@ -919,8 +957,6 @@ def hayDuenos():
     regUsuario = pickle.load(alUsuarios)
     if (regUsuario.tipoUsuario).rstrip() == 'duenolocal':
       b = True
-  print("HAY DUEÑOS", b)
-  input()
   return b
 
 def ordenarLocales():
