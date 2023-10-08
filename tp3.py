@@ -348,24 +348,24 @@ def adSolDesc():
   tamPromociones = os.path.getsize(afPromociones)
   while alPromociones < tamPromociones:
     posPromo = alPromociones.tell()
-    regPromocion = pickle.load(alPromociones)
+    regPromo = pickle.load(alPromociones)
     
-    if (regPromocion.estadoLocal).rstrip() == "pendiente":
-      print("Promo nro: ",(regPromocion.codPromo).rstrip()," ", regPromocion.textoPromo,"Desde / Hasta ", (regPromocion.fechaDesdeP).rstrip(), (regPromocion.fechaHastaP).rstrip())
+    if (regPromo.estadoPromo).rstrip() == "pendiente":
+      print("Promo nro: ",(regPromo.codPromo).rstrip()," ", regPromo.textoPromo,"Desde / Hasta ", (regPromo.fechaDesdeP).rstrip(), (regPromo.fechaHastaP).rstrip())
       for i in range (7):
-        print("días activa: ",regPromocion.diasSemana[i])
-      print("Local: ",(regPromocion.codLocal).rstrip())
+        print("días activa: ",regPromo.diasSemana[i])
+      print("Local: ",(regPromo.codLocal).rstrip())
       
       op= input("¿(A)prueba o (D)eniega?").upper
       while op != "A" or op != "D":
         op = input(" Ingrese A para aprobar o D para denegar")
       if op == "A":
-        regPromocion.estadoLocal = "aprobada"
+        regPromo.estadoPromo = "aprobada"
       else:
-        regPromocion.estadoLocal = "denegada"
+        regPromo.estadoPromo = "denegada"
 
       alPromociones.seek(posPromo)
-      pickle.dump(regPromocion,alPromociones)
+      pickle.dump(regPromo,alPromociones)
 
       
 
