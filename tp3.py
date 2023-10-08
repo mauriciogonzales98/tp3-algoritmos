@@ -486,6 +486,8 @@ def solicitoDescuento():
         regUsoPromo.codCliente = codCliente
         regUsoPromo.codPromo = codPromo
         regUsoPromo.fechaUsoPromo = datetime.datetime.today()
+        formatearUsoPromos(regUsoPromo)
+        pickle.dump(regUsoPromo,alUsoPromos)
         
 
         
