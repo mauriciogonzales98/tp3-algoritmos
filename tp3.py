@@ -209,14 +209,10 @@ def buscarUsuario(usuario):
   return pos
 
 def fechaInicio():
-  global fechaini
   bandera = True
   #hoy = (datetime.datetime.today()).strftime('%d/%m/%Y')
-  hoy = datetime.datetime.today()
-  hoy = datetime.datetime.strptime(hoy, '%d/%m/%Y')
-  hoy = datetime.datetime.strftime('%d/%m/%Y')
-  print("LA FECHA DE HOY ES: ", hoy)
-  input()
+  hoy = (datetime.datetime.today()).strftime('%d/%m/%Y')
+  hoy = datetime.datetime.strptime(str(hoy), '%d/%m/%Y')
   print("Ingrese la fecha de comienzo de la promocion en formato DD/MM/AAAA. No puede ser anterior a la fecha de hoy.")
   while bandera:
     try:
@@ -229,8 +225,18 @@ def fechaInicio():
   
   return fechaini
 
-def fechaFin():
-  print("ja")
+def fechaFin(fechaini):
+  print("Ingrese la fecha de finalizacion de la promocion en formato DD/MM/AAAA. Debe ser posterior a la fecha de inicio.")
+  bandera = True
+  while bandera:
+    try:
+      fechafin = input()
+      fechafin = datetime.datetime.strptime(fechafin, '%d/%m/%Y')
+      if fechafin > fechaini:
+        bandera = False
+    except ValueError:
+      print("La fecha no es valida. Intentelo nuevamente")
+  return fechafin
 # Declarativa de los menus --------------------------------------------------
 
 # MENU ADMINISTRADOR
@@ -378,9 +384,10 @@ def crearDesc(pos):
   alUsuarios.seek(pos)
   regUsuario = pickle.load(alUsuarios)
 
-  print("Ingrese el codigo de su local o -1 para salir")
+  print("Ingrese el codigo de su local o 0 para salir")
+  mostrarLocales()
   cod = int(input())
-  if cod != -1:
+  if cod != 0:
     posLocal = buscarCodLocal(cod)
     if posLocal != -1:
       alLocales.seek(posLocal)
@@ -395,16 +402,7 @@ def crearDesc(pos):
           promodesc = input()
 
         fechaini = fechaInicio()
-        print("Ingrese la fecha de finalizacion de la promocion en formato DD/MM/AAAA. Debe ser posterior a la fecha de inicio.")
-        bandera = True
-        while bandera:
-          try:
-            fechafin = input()
-            fechafin = datetime.datetime.strptime(fechafin, '%d/%m/%Y')
-            if fechafin > fechaini:
-              bandera = False
-          except ValueError:
-            print("La fecha no es valida. Intentelo nuevamente")
+        fechafin = fechaFin(fechaini)
 
         op = ' '
         dias = [0]*7
@@ -421,7 +419,7 @@ def crearDesc(pos):
           dias[int(op)-1] = 1
 
 
-        tmaxPromo = os.path.getsize(alPromociones)
+        tmaxPromo = os.path.getsize(afPromociones)
         alPromociones.seek(0)
         if tmaxPromo != 0:
           regPromo = pickle.load(alPromociones)
@@ -432,6 +430,7 @@ def crearDesc(pos):
           codigo = 0
           posPromo = 0
 
+        regPromo = Promociones()
         regPromo.codPromo = codigo
         regPromo.textoPromo = promodesc
         regPromo.fechaDesdeP = fechaini
@@ -440,11 +439,8 @@ def crearDesc(pos):
         regPromo.estadoPromo = "Pendiente"
         regPromo.codLocal = cod
         formatearPromociones(regPromo)
-<<<<<<< HEAD
         alPromociones.seek(posPromo)
         pickle.dump(regPromo, alPromociones)
-=======
->>>>>>> c14343333873a2a6221b2b7d45c8c37b4ad555ef
         #falta guardar los datos en el registro, la funcion de formateo y dumpearlo
     else:
       print("Usted no es el dueño de este local o el codigo es incorrecto.")
@@ -467,12 +463,7 @@ def buscoDescuento():
     pos = buscarCodLocal(codLocal)
     alPromociones.seek(pos)
     regPromo = pickle.load(alPromociones)
-    if (regPromo.)
-
-    
-    
-
-
+    #if (regPromo.)
 
 
 def solicitoDescuento():
@@ -535,7 +526,6 @@ def crearLocal():
       print('Ingrese rubro:')
       rubro = rubroLocales()
 
-<<<<<<< HEAD
       tmaxLocal = os.path.getsize(afLocales)
       alLocales.seek(0)
       if tmaxLocal != 0:
@@ -557,26 +547,6 @@ def crearLocal():
       formatearLocal(regLocal)
       alLocales.seek(pos)
       pickle.dump(regLocal, alLocales)
-=======
-    tmaxLocal = os.path.getsize(afLocales)
-    alLocales.seek(0)
-    if tmaxLocal != 0:
-      regLocal = pickle.load(alLocales)
-      tRegLocal = alLocales.tell()
-      codigo = tmaxLocal // tRegLocal
-    else:
-      codigo = 0
-    
-    regLocal = Locales()
-    regLocal.nombreLocal = nombre
-    regLocal.ubicacionLocal = ubicacion
-    regLocal.rubroLocal = rubro
-    regLocal.codUsuario = codDueno
-    regLocal.estadoLocal = 'A'
-    regLocal.codLocal = codigo
-    formatearLocal(regLocal)
-    pickle.dump(regLocal, alLocales)
->>>>>>> c14343333873a2a6221b2b7d45c8c37b4ad555ef
 
       print('Quiere ingresar otro local? Y/N')
       op = validarYN()
@@ -744,33 +714,49 @@ def buscarCodUsuario(cod):
 
   return pos
 
+#Esto hay que cambiar a barrido secuencial porque hay que ordenarlos por nombre
 def buscarCodLocal(cod):
   alLocales.seek(0)
-  regLocal = pickle.load(alLocales)
-  tLocal = alLocales.tell()
-  tmLocales = os.path.getsize(afLocales)
-  cantLocales = tmLocales // tLocal
-  alLocales.seek(0)
 
-  inicio = 0
-  fin = cantLocales
   b = False
-  while alLocales.tell()<tmLocales and not(b):
-    mid = (inicio + fin)//2
-    alLocales.seek(mid*tLocal)
+  while alLocales.tell()<os.path.getsize(afLocales) and not(b):
     pos = alLocales.tell()
     regLocal = pickle.load(alLocales)
     if int(regLocal.codLocal) == cod:
       b = True
-    elif cod < int(regLocal.codLocal):
-      fin = mid - 1
-    else:
-      inicio = mid + 1
 
   if not(b):
     pos = -1
 
   return pos
+
+# def buscarNomLocal(nom):
+#   alLocales.seek(0)
+#   regLocal = pickle.load(alLocales)
+#   tLocal = alLocales.tell()
+#   tmLocales = os.path.getsize(afLocales)
+#   cantLocales = tmLocales // tLocal
+#   alLocales.seek(0)
+
+#   inicio = 0
+#   fin = cantLocales
+#   b = False
+#   while alLocales.tell()<tmLocales and not(b):
+#     mid = (inicio + fin)//2
+#     alLocales.seek(mid*tLocal)
+#     pos = alLocales.tell()
+#     regLocal = pickle.load(alLocales)
+#     if int(regLocal.codLocal) == cod:
+#       b = True
+#     elif cod < int(regLocal.codLocal):
+#       fin = mid - 1
+#     else:
+#       inicio = mid + 1
+
+#   if not(b):
+#     pos = -1
+
+#   return pos
 
 def mostrarLocales():
   alLocales.seek(0)
