@@ -324,7 +324,6 @@ def menuCliente():
       print("diagramado en Chapín")
 
 #Funciones del Administrador----------------------------------
-
 def adSolDesc():
   alPromociones.seek(0)
   #tamPromociones = os.path.getsize(afPromociones)
@@ -337,8 +336,6 @@ def adSolDesc():
     diasSemana[1] = "Martes"
     diasSemana[2] = "Miercoles"
     diasSemana[3] = "Jueves"
-    diasSemana[4] = "Viernes"
-    diasSemana[5] = "Sabado"
     diasSemana[6] = "Domingo"
     if (regPromo.estadoPromo).rstrip() == 'pendiente':
       print("Promo nro: ",(regPromo.codPromo).rstrip()," Descripcion", (regPromo.textoPromo).rstrip()," Desde / Hasta ", (regPromo.fechaDesdeP).rstrip(),"/", (regPromo.fechaHastaP).rstrip())
@@ -479,23 +476,43 @@ def crearDesc(pos):
 #Funciones del Cliente
 
 def buscoDescuento():
-  codLocal = input ("ingrese el código del local que desea consultar. Ingese '0' para salir")
+  mostrarLocales()
+  codLocal = int(input ("ingrese el código del local que desea consultar. Ingese '0' para salir. "))
   while codLocal != 0 and buscarCodLocal(codLocal) == -1:
     codLocal = input ("código de local inválido")
   
   while codLocal != 0:
     date = fechaInicio()
-    weekday= datetime.datetime.weekday(date)
+    fecha = datetime.datetime.strftime(date, '%d/%m/%Y')
+    weekday = datetime.datetime.weekday(date)
     pos = buscarCodLocal(codLocal)
     alPromociones.seek(pos)
     regPromo = pickle.load(alPromociones)
+    dias = [0]*7
+    dias = convertirDias(regPromo.diasSemana)
+    print("WEEKDAY", weekday)
+    print("ARRAY DIAS", dias)
+    input()
     # Puede haber un problema en el siguiente if con la segunda condición, dependiendo de si se acepta la comparación entre today y date, porque today da la fecha hasta los segundos, y date hasta los días
-    if ((regPromo.estadoPromo).rstrip() == "aprobada" and datetime.datetime.today()<= date and (regPromo.fechaDesdeP).rstrip() <= date and date <= (regPromo.fechaHastaP).rstrip() and (regPromo.diasSemana[weekday]).rstrip() == 1 ):
+    if ((regPromo.estadoPromo).rstrip() == "aprobada" and datetime.datetime.today()<= fecha and (regPromo.fechaDesdeP).rstrip() <= fecha and fecha <= (regPromo.fechaHastaP).rstrip() and (dias[weekday]) == 1 ):
       print("código", (regPromo.codPromo).rstrip()," Promo: ", (regPromo.textoPromo).rstrip(), " Desde: ", (regPromo.fechaDesdeP).rstrip(), " Hasta: ", (regPromo.fechaHastaP).rstrip() )
       
+def convertirDias(arraydias):
+  dias = [0]*7
+  c=0
+  for i in range(len(arraydias)):
+    if arraydias[i] == '1':
+      dias[c] = 1
+      c +=1
+    if regPromo.diasSemana[i] == '0':
+      dias[c] = 0
+      c +=1
+  return dias
 
 def solicitoDescuento():
   global codCliente
+
+  mostrarLocales()
   codPromo=int(input("ingrese el código de promoción. Ingrese 0 para salir"))
   if codPromo != 0:
     if buscarCodDesc(codPromo) != -1:
@@ -733,6 +750,31 @@ def buscarLocal(nombre):
     regLocal = pickle.load(alLocales)
     if (nombre == (regLocal.nombreLocal).rstrip()):
       b = True
+
+  if not(b):
+    pos = -1
+
+  alLocales.seek(0)
+  regLocal = pickle.load(alLocales)
+  tLocal = alLocales.tell()
+  tmLocales = os.path.getsize(afLocales)
+  cantLocales = tmLocales // tLocal
+  alLocales.seek(0)
+
+  inicio = 0
+  fin = cantLocales
+  b = False
+  while alLocales.tell()<tmLocales and not(b):
+    mid = (inicio + fin)//2
+    alLocales.seek(mid*tLocal)
+    pos = alLocales.tell()
+    regLocal = pickle.load(alLocales)
+    if int(regLocal.codLocal) == cod:
+      b = True
+    elif cod < int(regLocal.codLocal):
+      fin = mid - 1
+    else:
+      inicio = mid + 1
 
   if not(b):
     pos = -1
