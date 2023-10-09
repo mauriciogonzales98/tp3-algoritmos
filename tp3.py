@@ -422,12 +422,28 @@ def utilizacionDesc(tipoUsuario):
 
     alUsoPromos.seek(0)
     alPromociones.seek(0)
-    while alPromociones.tell() < os.path.getsize(afPromociones):
-      regPromo = pickle.load(alPromociones)
-      while alUsoPromos.tell()< os.path.getsize(afUsoPromos):
-        cantUsoPromo = 0
-        if (regUsoPromo.codPromo).rstrip() == (regPromo.codPromo).rstrip() and (regPromo.codLocal).rstrip():
-          cantUsoPromo = cantUsoPromo + 1
+    alLocales.seek(0)
+
+    while alLocales.tell() < os.path.getsize(afLocales):
+      regLocal = pickle.load(alLocales)
+      if (regLocal.codUsuario).rstrip() == codDueno:
+        local = regLocal.codLocal
+        while alPromociones.tell() < os.path.getsize(afPromociones):
+          alPromociones.seek(0)
+          regPromo = pickle.load(alPromociones)
+          if (regPromo.codLocal).rstrip() == local:
+            alUsoPromos.seek(0)
+            cantUsoPromo = 0
+            while alUsoPromos.tell()< os.path.getsize(afUsoPromos):
+              if (regUsoPromo.codPromo).rstrip() == (regPromo.codPromo).rstrip():
+                cantUsoPromo = cantUsoPromo + 1
+
+    # while alPromociones.tell() < os.path.getsize(afPromociones):
+    #   regPromo = pickle.load(alPromociones)
+    #   while alUsoPromos.tell()< os.path.getsize(afUsoPromos):
+    #     cantUsoPromo = 0
+    #     if (regUsoPromo.codPromo).rstrip() == (regPromo.codPromo).rstrip() and (regPromo.codLocal).rstrip():
+    #       cantUsoPromo = cantUsoPromo + 1
       
       if datetime.datetime.strptime(str((regPromo.fechaDesdeP.rstrip())), "%d/%m/%Y") >= fDesde and datetime.datetime.strptime(str((regPromo.fechaHastaP).rstrip()), "%d/%m/%Y") <= fHasta and (regPromo.estadoPromo).rstrip() == "aprobada" and (regPromo.codlocal).rstrip() == regLocal:
         
