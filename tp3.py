@@ -1,12 +1,11 @@
 #Mauricio Gonzales, Tomás Montaña, Lucio Zanella, Carlos Gabasio
 from getpass import getpass
 from os import system, name
-import pickle
 import os.path
 import io
 import time
+import pickle
 import datetime
-
 #Declaraciones de clases -------------------------------------------------
 class Usuarios:
   def __init__(self):  
@@ -53,6 +52,13 @@ class Rubro:
   def __init__(self):
     self.rubro = ""
     self.cant = 0
+
+class color:
+    azul = '\033[94m'
+    cyan = '\033[96m'
+    verde = '\033[92m'
+    rojo = '\033[91m'
+    fin = '\033[0m'
 #Funciones de formateo ---------------------------------------------------------
 
 def formatearUsuario(regUsuario): 
@@ -833,8 +839,6 @@ def checkNombreLocal():
     res = buscarLocal(local)
   return local
 
-
-#ESTO ES DICOTOMICA D:
 def buscarLocal(nombre):
 
   alLocales.seek(0)
@@ -917,34 +921,6 @@ def buscarCodLocal(cod):
 
   return pos
 
-# def buscarNomLocal(nom):
-#   alLocales.seek(0)
-#   regLocal = pickle.load(alLocales)
-#   tLocal = alLocales.tell()
-#   tmLocales = os.path.getsize(afLocales)
-#   cantLocales = tmLocales // tLocal
-#   alLocales.seek(0)
-
-#   inicio = 0
-#   fin = cantLocales
-#   b = False
-#   while alLocales.tell()<tmLocales and not(b):
-#     mid = (inicio + fin)//2
-#     alLocales.seek(mid*tLocal)
-#     pos = alLocales.tell()
-#     regLocal = pickle.load(alLocales)
-#     if int(regLocal.codLocal) == cod:
-#       b = True
-#     elif cod < int(regLocal.codLocal):
-#       fin = mid - 1
-#     else:
-#       inicio = mid + 1
-
-#   if not(b):
-#     pos = -1
-
-#   return pos
-
 def mostrarLocales():
   alLocales.seek(0)
   print("Codigo Local\t Nombre\t Ubicacion\t Rubro\t Codigo Dueño\t Estado")
@@ -1024,7 +1000,32 @@ def ordenarLocales():
           alLocales.flush()
 
 def mapaLocales():
-  print("proximamente xd")
+  alLocales.seek(0)
+  clear()
+  for i in range(10):
+    for o in range(5):
+      print('+--', end='')
+    print('+')
+    for j in range(5):
+      print('|',   end='')
+      if alLocales.tell() < os.path.getsize(afLocales):
+        regLocal = pickle.load(alLocales)
+        if (regLocal.estadoLocal).rstrip() == 'A':
+          if int(regLocal.codLocal) < 10:
+            print(color.verde,"0",(regLocal.codLocal).rstrip(),color.fin,sep='', end='')
+          else:
+            print((color.verde, regLocal.codLocal).rstrip(), color.fin, sep='', end='')
+        else:
+          print(color.rojo,'00', color.fin, sep='', end='')
+      else:
+        print('00', end='')
+      #print(mapa[i][j],end='')
+    print('|')
+  for m in range(5):
+    print('+--', end='')
+  print('+')
+  print('Presione ENTER')
+  input()
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#- Programa principal -#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 # Apertura de archivos --------------------------------------------------------
