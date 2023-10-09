@@ -400,7 +400,7 @@ def utilizacionDesc(tipoUsuario):
   fDesde = input("ingrese una fecha de inicio en el formato DD/MM/AAAA")
   fDesde = datetime.datetime.strptime(str(fDesde),"%d/%m/%Y")
   fHasta = input ("ingrese una fecha de finalización en el formato DD/MM/AAAA")
-  fHasta = datetime.datetime.strptime(str(fDesde),"%d/%m/%Y")
+  fHasta = datetime.datetime.strptime(str(fHasta),"%d/%m/%Y")
 
   if tipoUsuario == "administrador":
     alUsoPromos.seek(0)
