@@ -27,8 +27,8 @@ class Promociones:
   def __init__(self):  
     self.codPromo = 0
     self.textoPromo = ""
-    self.fechaDesdeP = ""
-    self.fechaHastaP = ""
+    self.fechaDesdeP = datetime.datetime(1, 1, 1)
+    self.fechaHastaP = datetime.datetime(1, 1, 1)
     self.diasSemana = [0]*7
     self.estadoPromo = ""
     self.codLocal = 0
@@ -78,9 +78,9 @@ def formatearLocal(regLocal):
 def formatearPromociones(regPromo):
   regPromo.codPromo = str(regPromo.codPromo).ljust(1)
   regPromo.textoPromo = regPromo.textoPromo.ljust(200)
-  regPromo.fechaDesdeP = str(regPromo.fechaDesdeP).ljust(20)
-  regPromo.fechaHastaP = str(regPromo.fechaHastaP).ljust(20)
-  regPromo.diasSemana = regPromo.diasSemana
+  #regPromo.fechaDesdeP = str(regPromo.fechaDesdeP).ljust(20)
+  #regPromo.fechaHastaP = str(regPromo.fechaHastaP).ljust(20)
+  #regPromo.diasSemana = regPromo.diasSemana
   regPromo.estadoPromo = str(regPromo.estadoPromo).ljust(10)
   regPromo.codLocal = str(regPromo.codLocal).ljust(1)
 
@@ -401,7 +401,7 @@ def utilizacionDesc(tipoUsuario):
   fDesde = datetime.datetime.strptime(fDesde, '%d/%m/%Y')
   fHasta = input ("ingrese una fecha de finalización en el formato DD/MM/AAAA: ")
   fHasta = datetime.datetime.strptime(fHasta, '%d/%m/%Y')
-
+  cantUsoPromo = 0
   if tipoUsuario == "administrador":
     alUsoPromos.seek(0)
     alPromociones.seek(0)
@@ -411,22 +411,30 @@ def utilizacionDesc(tipoUsuario):
         cantUsoPromo = 0
         if (regUsoPromo.codPromo).rstrip() == (regPromo.codPromo).rstrip():
           cantUsoPromo += 1
-
-      fd = (regPromo.fechaDesdeP).rstrip()
-      print("FECHAS1", fd)
-      input()
-      fd = datetime.datetime.strptime(fd, '%d/%m/%Y')
-      fh = (regPromo.fechaHastaP).rstrip()
-      fh = datetime.datetime.strptime(fh, '%d/%m/%Y')
+      fd = regPromo.fechaDesdeP
+      fh = regPromo.fechaHastaP
       if (fd >= fDesde) and (fh <= fHasta) and (regPromo.estadoPromo).rstrip() == "aprobada":
         # Error al imprimir el array, no se puede trabajar ese campo como array
-        print ("código: ", (regPromo.codPromo).rstrip(), 
-               " promoción: ", (regPromo.textoPromo).rstrip(), 
-               " fecha Desde: ", (regPromo.fechaDesdeP).rstrip(), 
-               " Fecha Hasta: ", (regPromo.fechaHastaP).rstrip(), 
-               " días activa: ", mostrarDias(regPromo.diasSemana), 
-               " local: ", (regPromo.codLocal).rstrip(), 
-               " veces usado: ", cantUsoPromo, end='\n') 
+        print ("código: ", (regPromo.codPromo).rstrip(),
+               " promoción: ", (regPromo.textoPromo).rstrip(),
+               " fecha Desde: ", regPromo.fechaDesdeP,
+               " Fecha Hasta: ", regPromo.fechaHastaP, end='')
+        print( " días activa: ", end='') 
+        diasSemana = [""]*7
+        diasSemana[0] = "Lunes"
+        diasSemana[1] = "Martes"
+        diasSemana[2] = "Miercoles"
+        diasSemana[3] = "Jueves"
+        diasSemana[4] = "Viernes"
+        diasSemana[5] = "Sabado"
+        diasSemana[6] = "Domingo"
+                #arraydias = convertirDias(arraydias)
+        for i in range(7):
+          if regPromo.diasSemana[i] == 1:
+            print(diasSemana[i],end = " ")
+        print(       " local: ", (regPromo.codLocal).rstrip(),
+              " veces usado: ", cantUsoPromo, end='\n')
+      input()
   #Este else contiene el caso del dueño de locales, que solo ve las promociones aplicadas a sus locales
   #Posible error: un mismo dueño puede tener mútliples locales, este procedure no tiene eso en cuenta
 
@@ -449,14 +457,28 @@ def utilizacionDesc(tipoUsuario):
             while alUsoPromos.tell()< os.path.getsize(afUsoPromos):
               if (regUsoPromo.codPromo).rstrip() == (regPromo.codPromo).rstrip():
                 cantUsoPromo = cantUsoPromo + 1
-            if datetime.datetime.strptime(str((regPromo.fechaDesdeP).rstrip()), "%d/%m/%Y") >= fDesde and datetime.datetime.strptime(str((regPromo.fechaHastaP).rstrip()), "%d/%m/%Y") <= fHasta and (regPromo.estadoPromo).rstrip() == "aprobada" and (regPromo.codlocal).rstrip() == regLocal:
-              print ("código: ", (regPromo.codPromo).rstrip(), 
-                     " promoción: ", (regPromo.textoPromo).rstrip(), 
-                     " fecha Desde: ", (regPromo.fechaDesdeP).rstrip(), 
-                     " Fecha Hasta: ", (regPromo.fechaHastaP).rstrip(), 
-                     " días activa: ", mostrarDias(regPromo.diasSemana),
-                     " local: ", (regPromo.codLocal).rstrip(),
-                     " veces usado: ", cantUsoPromo, end='\n')   
+            fd = regPromo.fechaDesdeP
+            fh = regPromo.fechaHastaP
+            if fd >= fDesde and fh <= fHasta and (regPromo.estadoPromo).rstrip() == "aprobada" and (regPromo.codlocal).rstrip() == regLocal:
+              print("código: ", (regPromo.codPromo).rstrip(),
+                     " promoción: ", (regPromo.textoPromo).rstrip(),
+                     " fecha Desde: ", regPromo.fechaDesdeP,
+                     " Fecha Hasta: ", regPromo.fechaHastaP, end='')
+              print( " días activa: ", end='') 
+              diasSemana = [""]*7
+              diasSemana[0] = "Lunes"
+              diasSemana[1] = "Martes"
+              diasSemana[2] = "Miercoles"
+              diasSemana[3] = "Jueves"
+              diasSemana[4] = "Viernes"
+              diasSemana[5] = "Sabado"
+              diasSemana[6] = "Domingo"
+              #arraydias = convertirDias(arraydias)
+              for i in range(7):
+                if regPromo.diasSemana[i] == 1:
+                  print(diasSemana[i],end = " ")
+              print(       " local: ", (regPromo.codLocal).rstrip(),
+                     " veces usado: ", cantUsoPromo, end='\n')
 
     # while alPromociones.tell() < os.path.getsize(afPromociones):
     #   regPromo = pickle.load(alPromociones)
@@ -582,7 +604,7 @@ def mostrarDias(arraydias):
   diasSemana[4] = "Viernes"
   diasSemana[5] = "Sabado"
   diasSemana[6] = "Domingo"
-  arraydias = convertirDias(arraydias)
+  #arraydias = convertirDias(arraydias)
   for i in range(7):
     if arraydias[i] == 1:
       print(diasSemana[i],end = " ")
