@@ -437,6 +437,8 @@ def utilizacionDesc(tipoUsuario):
             while alUsoPromos.tell()< os.path.getsize(afUsoPromos):
               if (regUsoPromo.codPromo).rstrip() == (regPromo.codPromo).rstrip():
                 cantUsoPromo = cantUsoPromo + 1
+            if datetime.datetime.strptime(str((regPromo.fechaDesdeP.rstrip())), "%d/%m/%Y") >= fDesde and datetime.datetime.strptime(str((regPromo.fechaHastaP).rstrip()), "%d/%m/%Y") <= fHasta and (regPromo.estadoPromo).rstrip() == "aprobada" and (regPromo.codlocal).rstrip() == regLocal:
+              print ("código: ", (regPromo.codPromo).rstrip(), " promoción: ", (regPromo.textoPromo).rstrip(), " fecha Desde: ", (regPromo.fechaDesdeP).rstrip(), " Fecha Hasta: ", (regPromo.fechaHastaP).rstrip(), " días activa: ", "local: ", (regPromo.codLocal).rstrip(), (regPromo.diasSemana), "veces usado: ", cantUsoPromo)   
 
     # while alPromociones.tell() < os.path.getsize(afPromociones):
     #   regPromo = pickle.load(alPromociones)
@@ -445,9 +447,9 @@ def utilizacionDesc(tipoUsuario):
     #     if (regUsoPromo.codPromo).rstrip() == (regPromo.codPromo).rstrip() and (regPromo.codLocal).rstrip():
     #       cantUsoPromo = cantUsoPromo + 1
       
-      if datetime.datetime.strptime(str((regPromo.fechaDesdeP.rstrip())), "%d/%m/%Y") >= fDesde and datetime.datetime.strptime(str((regPromo.fechaHastaP).rstrip()), "%d/%m/%Y") <= fHasta and (regPromo.estadoPromo).rstrip() == "aprobada" and (regPromo.codlocal).rstrip() == regLocal:
+      # if datetime.datetime.strptime(str((regPromo.fechaDesdeP.rstrip())), "%d/%m/%Y") >= fDesde and datetime.datetime.strptime(str((regPromo.fechaHastaP).rstrip()), "%d/%m/%Y") <= fHasta and (regPromo.estadoPromo).rstrip() == "aprobada" and (regPromo.codlocal).rstrip() == regLocal:
         
-        print ("código: ", (regPromo.codPromo).rstrip(), " promoción: ", (regPromo.textoPromo).rstrip(), " fecha Desde: ", (regPromo.fechaDesdeP).rstrip(), " Fecha Hasta: ", (regPromo.fechaHastaP).rstrip(), " días activa: ", "local: ", (regPromo.codLocal).rstrip(), (regPromo.diasSemana), "veces usado: ", cantUsoPromo)   
+      #   print ("código: ", (regPromo.codPromo).rstrip(), " promoción: ", (regPromo.textoPromo).rstrip(), " fecha Desde: ", (regPromo.fechaDesdeP).rstrip(), " Fecha Hasta: ", (regPromo.fechaHastaP).rstrip(), " días activa: ", "local: ", (regPromo.codLocal).rstrip(), (regPromo.diasSemana), "veces usado: ", cantUsoPromo)   
 
 # Funciones del Dueño de Local
 def crearDesc(pos):
