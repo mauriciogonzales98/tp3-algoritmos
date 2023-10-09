@@ -352,13 +352,14 @@ def adSolDesc():
     diasSemana[1] = "Martes"
     diasSemana[2] = "Miercoles"
     diasSemana[3] = "Jueves"
+    diasSemana[4] = "Viernes"
+    diasSemana[5] = "Sabado"
     diasSemana[6] = "Domingo"
     if (regPromo.estadoPromo).rstrip() == 'pendiente':
       print("Promo nro: ",(regPromo.codPromo).rstrip()," Descripcion", (regPromo.textoPromo).rstrip()," Desde / Hasta ", (regPromo.fechaDesdeP).rstrip(),"/", (regPromo.fechaHastaP).rstrip())
       print("Dias activa: ")
       dias = [0]*7
       dias = regPromo.diasSemana
-      #aux = (regPromo.diasSemana).rstrip("]")
       c = 0
       for i in range(len(regPromo.diasSemana)):
         if regPromo.diasSemana[i] == '1':
@@ -366,56 +367,32 @@ def adSolDesc():
           c +=1
         if regPromo.diasSemana[i] == '0':
           c +=1
-        #print(dias[i], sep=" ", end=" ")
-      
+
       posLocal = buscarCodLocal(int(regPromo.codLocal))
       alLocales.seek(posLocal)
       regLocal = pickle.load(alLocales)
       print("Local : ", (regLocal.nombreLocal).rstrip())
 
-  
-  print("Ingrese el codigo de la promocion que quiere modificar o 0 para salir")
-  cod = int(input())
-  cod = buscarCodDesc(cod)
-  while cod > 0:
-    if (regPromo.estadoPromo).rstrip() == 'pendiente':
-      alPromociones.seek(0)
-      pos = alPromociones.tell()
-      regPromo = pickle.load(alPromociones)
-      print("¿(A)prueba o (D)eniega?: ")
-      op = input()
-      while op.upper() != "A" and op.upper() != "D":
-        op = input(" Ingrese A para aprobar o D para denegar: ")
-      if op.upper() == "A":
-        regPromo.estadoPromo = "aprobada"
-      else:
-        regPromo.estadoPromo = "denegada"
-      alPromociones.seek(pos)
-      pickle.dump(regPromo, alPromociones)
+  print(color.cyan,"La funcionalidad de la funcion esta comentada porque produce un error que corrompe el funcionamiento del resto del programa", color.fin)
+  # print("Ingrese el codigo de la promocion que quiere modificar o 0 para salir")
+  # cod = int(input())
+  # cod = buscarCodDesc(cod)
+  # while cod > 0:
+  #   if (regPromo.estadoPromo).rstrip() == 'pendiente':
+  #     alPromociones.seek(0)
+  #     pos = alPromociones.tell()
+  #     regPromo = pickle.load(alPromociones)
+  #     print("¿(A)prueba o (D)eniega?: ")
+  #     op = input()
+  #     while op.upper() != "A" and op.upper() != "D":
+  #       op = input(" Ingrese A para aprobar o D para denegar: ")
+  #     if op.upper() == "A":
+  #       regPromo.estadoPromo = "aprobada"
+  #     else:
+  #       regPromo.estadoPromo = "denegada"
+  #     alPromociones.seek(pos)
+  #     pickle.dump(regPromo, alPromociones)
 
-    # if (regPromo.estadoPromo).rstrip() == "pendiente":
-    #   print("Promo nro: ",(regPromo.codPromo).rstrip()," ", regPromo.textoPromo,"Desde / Hasta ", (regPromo.fechaDesdeP).rstrip(), (regPromo.fechaHastaP).rstrip())
-    #   # print("días activa: ")
-    #   # dias = [0]*7
-    #   # aux = (regPromo.diasSemana).rstrip('[ ]')
-    #   # dias = aux.split(',')
-    #   # for i in range(7):
-    #   #   print(dias[i], sep=" ", end=" ")
-    #   # print("Local: ", int((regPromo.codLocal)))
-    #   print("¿(A)prueba o (D)eniega?: ")
-    #   op = input()
-    #   while op.upper() != "A" and op.upper() != "D":
-    #     op = input(" Ingrese A para aprobar o D para denegar: ")
-    #   if op.upper() == "A":
-    #     regPromo.estadoPromo = "aprobada "
-    #   else:
-    #     regPromo.estadoPromo = "denegada "
-
-      
-    #   alPromociones.seek(posPromo)
-    #   formatearPromociones(regPromo)
-    #   pickle.dump(regPromo, alPromociones)
-    #   alPromociones.flush()
   input()
 
 def utilizacionDesc(tipoUsuario):
@@ -455,9 +432,6 @@ def utilizacionDesc(tipoUsuario):
       if datetime.datetime.strptime(str((regPromo.fechaDesdeP.rstrip())), "%d/%m/%Y") >= fDesde and datetime.datetime.strptime(str((regPromo.fechaHastaP).rstrip()), "%d/%m/%Y") <= fHasta and (regPromo.estadoPromo).rstrip() == "aprobada":
         
         print ("código: ", (regPromo.codPromo).rstrip(), " promoción: ", (regPromo.textoPromo).rstrip(), " fecha Desde: ", (regPromo.fechaDesdeP).rstrip(), " Fecha Hasta: ", (regPromo.fechaHastaP).rstrip(), " días activa: ", (regPromo.diasSemana), "veces usado: ", cantUsoPromo)   
-
-
-
 
 # Funciones del Dueño de Local
 def crearDesc(pos):
@@ -517,7 +491,8 @@ def crearDesc(pos):
         regPromo.fechaDesdeP = fechaini
         regPromo.fechaHastaP = fechafin
         regPromo.diasSemana = dias
-        regPromo.estadoPromo = "pendiente"
+        #regPromo.estadoPromo = "pendiente"
+        regPromo.estadoPromo = "aprobado"
         regPromo.codLocal = cod
         formatearPromociones(regPromo)
         alPromociones.seek(posPromo)
@@ -1100,7 +1075,6 @@ while op !='3':
   print("2) Registrarse como cliente.")
   print("3) Salir.")
   op = validarInput("1", "3")
-
 
 print("Adios!")
 input()
