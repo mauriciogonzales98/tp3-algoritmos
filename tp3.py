@@ -833,33 +833,33 @@ def checkNombreLocal():
   return local
 
 def buscarLocal(nombre):
-
-  alLocales.seek(0)
-  regLocal = pickle.load(alLocales)
-  tLocal = alLocales.tell()
-  tmLocales = os.path.getsize(afLocales)
-  cantLocales = tmLocales // tLocal
-  alLocales.seek(0)
-
-  inicio = 0
-  fin = cantLocales
-  b = False
-  while inicio <= fin and not(b):
-    mid = (inicio + fin)//2
-    alLocales.seek(mid*tLocal)
-    pos = alLocales.tell()
+  if os.path.getsize(afLocales)>0:
+    alLocales.seek(0)
     regLocal = pickle.load(alLocales)
-    if regLocal.nombreLocal == nombre:
-      b = True
-    elif nombre < regLocal.nombreLocal:
-      fin = mid - 1
-    else:
-      inicio = mid + 1
+    tLocal = alLocales.tell()
+    tmLocales = os.path.getsize(afLocales)
+    cantLocales = tmLocales // tLocal
+    alLocales.seek(0)
 
-  if not(b):
-    pos = -1
+    inicio = 0
+    fin = cantLocales
+    b = False
+    while inicio <= fin and not(b):
+      mid = (inicio + fin)//2
+      alLocales.seek(mid*tLocal)
+      pos = alLocales.tell()
+      regLocal = pickle.load(alLocales)
+      if regLocal.nombreLocal == nombre:
+        b = True
+      elif nombre < regLocal.nombreLocal:
+        fin = mid - 1
+      else:
+        inicio = mid + 1
 
-  return pos
+    if not(b):
+      pos = -1
+
+    return pos
 
 def checkCodigoDueno():
   mostrarUsuarios()
@@ -975,22 +975,23 @@ def hayDuenos():
 
 def ordenarLocales():
   alLocales.seek(0)
-  aux = pickle.load(alLocales) #para con el tell saber cuanto pesa un registro
-  tamReg = alLocales.tell() 
-  tamArch = os.path.getsize(afLocales)
-  cantReg = int(tamArch / tamReg)  
-  for i in range(0, cantReg-1):
-    for j in range (i+1, cantReg):
-      alLocales.seek (i*tamReg, 0)
-      auxi = pickle.load(alLocales)
-      alLocales.seek (j*tamReg, 0)
-      auxj = pickle.load(alLocales)
-      if (auxi.nombreLocal > auxj.nombreLocal):
-          alLocales.seek (i*tamReg, 0)
-          pickle.dump(auxj, alLocales)
-          alLocales.seek (j*tamReg, 0)
-          pickle.dump(auxi,alLocales)
-          alLocales.flush()
+  if os.path.getsize(afLocales)>0:
+    aux = pickle.load(alLocales) #para con el tell saber cuanto pesa un registro
+    tamReg = alLocales.tell() 
+    tamArch = os.path.getsize(afLocales)
+    cantReg = int(tamArch / tamReg)  
+    for i in range(0, cantReg-1):
+      for j in range (i+1, cantReg):
+        alLocales.seek (i*tamReg, 0)
+        auxi = pickle.load(alLocales)
+        alLocales.seek (j*tamReg, 0)
+        auxj = pickle.load(alLocales)
+        if (auxi.nombreLocal > auxj.nombreLocal):
+            alLocales.seek (i*tamReg, 0)
+            pickle.dump(auxj, alLocales)
+            alLocales.seek (j*tamReg, 0)
+            pickle.dump(auxi,alLocales)
+            alLocales.flush()
 
 def mapaLocales():
   alLocales.seek(0)
